@@ -25,16 +25,19 @@ typedef pcl::PointCloud<Point>  Cloud;
 
 class Registration::Representation {
 	public:
-		typedef std::shared_ptr<Representation>        ptr;
-		typedef std::weak_ptr<Representation>          wptr;
-		typedef std::shared_ptr<const Representation>  const_ptr;
-		typedef std::weak_ptr<const Representation>    const_wptr;
-		typedef Eigen::Affine3f                        TransformType;
-		typedef OpenMesh::Vec4f                        ColorType;
-		typedef cartan::openmesh_t<ColorType>          Mesh;
-		typedef std::shared_ptr<Mesh>                  MeshPtr;
-		typedef harmont::mesh_object<Mesh>             RenderedMesh;
-		typedef cartan::mesh_traits<Mesh>              MeshTraits;
+		typedef std::shared_ptr<Representation>           ptr;
+		typedef std::weak_ptr<Representation>             wptr;
+		typedef std::shared_ptr<const Representation>     const_ptr;
+		typedef std::weak_ptr<const Representation>       const_wptr;
+		typedef Eigen::Affine3f                           TransformType;
+		typedef OpenMesh::Vec4f                           ColorType;
+		typedef cartan::openmesh_t<ColorType>             Mesh;
+		typedef std::shared_ptr<Mesh>                     MeshPtr;
+		typedef harmont::mesh_object<Mesh>                RenderedMesh;
+		typedef cartan::mesh_traits<Mesh>                 MeshTraits;
+		typedef harmont::renderable::ptr_t                RenderablePtr;
+		typedef std::vector<RenderablePtr>                Renderables;
+		typedef std::function<void (int, RenderablePtr)>  AddRenderableCallback;
 
 	public:
 		Representation(const std::vector<fs::path>& paths);
@@ -44,27 +47,28 @@ class Registration::Representation {
 
 		bool isCloud() const;
 		bool isMesh() const;
-        bool isIFC() const;
+		bool isIFC() const;
 
-		harmont::renderable::ptr_t renderable();
-		harmont::renderable::const_ptr_t renderable() const;
+		Renderables&       renderables();
+		const Renderables& renderables() const;
 		Cloud::Ptr cloud();
 		MeshPtr mesh();
-        duraark::ifc_objects_t<ColorType>& objects();
-        const duraark::ifc_objects_t<ColorType>& objects() const;
+		duraark::ifc_objects_t<ColorType>& objects();
+		const duraark::ifc_objects_t<ColorType>& objects() const;
 		const std::vector<uint32_t>& cloudSizes() const;
 		const std::vector<Eigen::Vector3f>& cloudOrigins() const;
 
-		void manualTransform(const TransformType& t);
+		TransformType transformation() const;
+		void transform(const TransformType& t);
 
-		void annotate(const std::vector<int32_t>& associations, const std::vector<uint32_t>& possible_hits, const std::vector<uint32_t>& actual_hits, float ratio_threshold, float points_per_square);
+		void annotate(const std::vector<int32_t>& associations, const std::vector<uint32_t>& possible_hits, const std::vector<uint32_t>& actual_hits, float ratio_threshold, float points_per_square, Visualizer* vis);
 
 	protected:
 		std::vector<fs::path>              m_paths;
-		harmont::renderable::ptr_t         m_renderable;
+		Renderables                        m_renderables;
 		MeshPtr                            m_mesh;
 		Cloud::Ptr                         m_cloud;
-        duraark::ifc_objects_t<ColorType>  m_objects;
+		duraark::ifc_objects_t<ColorType>  m_objects;
 		std::vector<std::vector<int>>      m_vertexMap;
 		std::vector<uint32_t>              m_cloudSizes;
 		std::vector<Eigen::Vector3f>       m_cloudOrigins;
@@ -89,12 +93,16 @@ void Registration::init() {
 		gui()->log()->error(std::string("Could not load second representation: ") + error.what());
 	}
 
-	harmont::renderable::ptr_t  render0 = m_rep0->renderable();
-	harmont::renderable::ptr_t  render1 = m_rep1->renderable();
-    m_rep0->center();
-    m_rep1->center();
-    addObject("rep0", render0);
-	addObject("rep1", render1);
+	m_rep0->center();
+	m_rep1->center();
+	uint32_t  idx = 0;
+	for (auto& r : m_rep0->renderables()) {
+		addObject("rep0_" + std::to_string(idx++), r);
+	}
+	idx = 0;
+	for (auto& r : m_rep1->renderables()) {
+		addObject("rep1_" + std::to_string(idx++), r);
+	}
 
 	addProperties();
 	registerEvents();
@@ -106,12 +114,16 @@ void Registration::addProperties() {
 	auto  showGroup = gui()->modes()->addGroup("showGroup");
 	showGroup->addOption("showClip", "Enable Clipping", std::string(ICON_PREFIX) + "clipping.png");
 
-    showGroup->setCallback([&] (std::string option, bool state) {
-        if (option == "showClip") {
-            m_rep0->renderable()->set_clipping(state);
-            m_rep1->renderable()->set_clipping(state);
-        }
-    });
+	showGroup->setCallback([&] (std::string option, bool state) {
+	                          if (option == "showClip") {
+	                             for (auto& r: m_rep0->renderables()) {
+	                                r->set_clipping(state);
+										  }
+	                             for (auto& r: m_rep1->renderables()) {
+	                                r->set_clipping(state);
+										  }
+									  }
+								  });
 
 	auto  transformGroup = gui()->modes()->addGroup("TransformGroup");
 	transformGroup->addOption("TransformA", "Transform A", std::string(ICON_PREFIX) + "transform_a_128.png");
@@ -124,144 +136,148 @@ void Registration::addProperties() {
 	// auto editGroup = gui()->modes()->addGroup("editGroup");
 	// editGroup->addOption("editClip", "Modify Clipping Plane", std::string(ICON_PREFIX)+"clipplane.png");
 
-    auto registrationSection = gui()->properties()->add<Section>("Registration", "Registration");
-        registrationSection->add<Button>("Auto align A -> B", "AlignAB")->setCallback([&] () {
-        gui()->status()->set("Computing alignment transformation...");
-        setICPParameters_();
-        ::duraark::registration::affine_t t;
-        Eigen::Affine3f t0, t1;
-        t0 = m_rep0->renderable()->transformation();
-        t1 = m_rep1->renderable()->transformation();
-        if (m_rep0->isCloud()) {
-            if (m_rep1->isCloud()) {
-                t = m_registration->match<Point>(m_rep0->cloud(), m_rep1->cloud(), t0, t1);
-            } else {
-                t = m_registration->match<Point, OpenMesh::Vec4f>(m_rep0->cloud(), *(m_rep1->mesh()), t0, t1);
-            }
-        } else {
-            if (m_rep1->isCloud()) {
-                t = m_registration->match<OpenMesh::Vec4f, Point>(*(m_rep0->mesh()), m_rep1->cloud(), t0, t1);
-            } else {
-                t = m_registration->match<OpenMesh::Vec4f>(*(m_rep0->mesh()), *(m_rep1->mesh()), t0, t1);
-            }
-        }
-        m_rep0->manualTransform(t);
-        gui()->status()->set("Done computing alignment transformation.");
-    });
-    registrationSection->add<Button>("Auto align B -> A", "AlignBA")->setCallback([&] () {
-        gui()->status()->set("Computing alignment transformation...");
-        setICPParameters_();
-        ::duraark::registration::affine_t t;
-        Eigen::Affine3f t0, t1;
-        t0 = m_rep0->renderable()->transformation();
-        t1 = m_rep1->renderable()->transformation();
-        if (m_rep1->isCloud()) {
-            if (m_rep0->isCloud()) {
-                t = m_registration->match<Point>(m_rep1->cloud(), m_rep0->cloud(), t1, t0);
-            } else {
-                t = m_registration->match<Point, OpenMesh::Vec4f>(m_rep1->cloud(), *(m_rep0->mesh()), t1, t0);
-            }
-        } else {
-            if (m_rep0->isCloud()) {
-                t = m_registration->match<OpenMesh::Vec4f, Point>(*(m_rep1->mesh()), m_rep0->cloud(), t1, t0);
-            } else {
-                t = m_registration->match<OpenMesh::Vec4f>(*(m_rep1->mesh()), *(m_rep0->mesh()), t1, t0);
-            }
-        }
-        m_rep1->manualTransform(t);
-        gui()->status()->set("Done computing alignment transformation.");
-    });
+	auto  registrationSection = gui()->properties()->add<Section>("Registration", "Registration");
+	registrationSection->add<Button>("Auto align A -> B", "AlignAB")->setCallback([&] () {
+	                                                                                 gui()->status()->set("Computing alignment transformation...");
+	                                                                                 setICPParameters_();
+	                                                                                 ::duraark::registration::affine_t t;
+	                                                                                 Eigen::Affine3f t0, t1;
+	                                                                                 t0 = m_rep0->transformation();
+	                                                                                 t1 = m_rep1->transformation();
+	                                                                                 if (m_rep0->isCloud()) {
+	                                                                                    if (m_rep1->isCloud()) {
+	                                                                                       t = m_registration->match<Point>(m_rep0->cloud(), m_rep1->cloud(), t0, t1);
+																													} else {
+	                                                                                       t = m_registration->match<Point, OpenMesh::Vec4f>(m_rep0->cloud(), *(m_rep1->mesh()), t0, t1);
+																													}
+																												} else {
+	                                                                                    if (m_rep1->isCloud()) {
+	                                                                                       t = m_registration->match<OpenMesh::Vec4f, Point>(*(m_rep0->mesh()), m_rep1->cloud(), t0, t1);
+																													} else {
+	                                                                                       t = m_registration->match<OpenMesh::Vec4f>(*(m_rep0->mesh()), *(m_rep1->mesh()), t0, t1);
+																													}
+																												}
+	                                                                                 m_rep0->transform(t);
+	                                                                                 gui()->status()->set("Done computing alignment transformation.");
+																											});
+	registrationSection->add<Button>("Auto align B -> A", "AlignBA")->setCallback([&] () {
+	                                                                                 gui()->status()->set("Computing alignment transformation...");
+	                                                                                 setICPParameters_();
+	                                                                                 ::duraark::registration::affine_t t;
+	                                                                                 Eigen::Affine3f t0, t1;
+	                                                                                 t0 = m_rep0->transformation();
+	                                                                                 t1 = m_rep1->transformation();
+	                                                                                 if (m_rep1->isCloud()) {
+	                                                                                    if (m_rep0->isCloud()) {
+	                                                                                       t = m_registration->match<Point>(m_rep1->cloud(), m_rep0->cloud(), t1, t0);
+																													} else {
+	                                                                                       t = m_registration->match<Point, OpenMesh::Vec4f>(m_rep1->cloud(), *(m_rep0->mesh()), t1, t0);
+																													}
+																												} else {
+	                                                                                    if (m_rep0->isCloud()) {
+	                                                                                       t = m_registration->match<OpenMesh::Vec4f, Point>(*(m_rep1->mesh()), m_rep0->cloud(), t1, t0);
+																													} else {
+	                                                                                       t = m_registration->match<OpenMesh::Vec4f>(*(m_rep1->mesh()), *(m_rep0->mesh()), t1, t0);
+																													}
+																												}
+	                                                                                 m_rep1->transform(t);
+	                                                                                 gui()->status()->set("Done computing alignment transformation.");
+																											});
 
-    auto registrationAdvancedSection = registrationSection->add<Section>("Advanced settings", "Advanced");
-    registrationAdvancedSection->add<Number>("Max. corresp. distance", "MaxCorrespondenceDistance")->setMin(0.0001).setMax(100.0).setDigits(4).setValue(0.01);
-    registrationAdvancedSection->add<Number>("Transformation epsilon", "TransformationEpsilon")->setMin(0.00001).setMax(100.0).setDigits(5).setValue(0.00001);
-    registrationAdvancedSection->add<Number>("Euclidean fitness epsilon", "EuclideanFitnessEpsilon")->setMin(0.00001).setMax(100.0).setDigits(5).setValue(0.00001);
-    registrationAdvancedSection->add<Number>("Maximum iterations", "MaximumIterations")->setMin(1).setMax(1000).setDigits(0).setValue(50);
-    registrationAdvancedSection->collapse();
+	auto  registrationAdvancedSection = registrationSection->add<Section>("Advanced settings", "Advanced");
+	registrationAdvancedSection->add<Number>("Max. corresp. distance", "MaxCorrespondenceDistance")->setMin(0.0001).setMax(100.0).setDigits(4).setValue(0.01);
+	registrationAdvancedSection->add<Number>("Transformation epsilon", "TransformationEpsilon")->setMin(0.00001).setMax(100.0).setDigits(5).setValue(0.00001);
+	registrationAdvancedSection->add<Number>("Euclidean fitness epsilon", "EuclideanFitnessEpsilon")->setMin(0.00001).setMax(100.0).setDigits(5).setValue(0.00001);
+	registrationAdvancedSection->add<Number>("Maximum iterations", "MaximumIterations")->setMin(1).setMax(1000).setDigits(0).setValue(50);
+	registrationAdvancedSection->collapse();
 
-    if ((m_rep0->isIFC() && m_rep1->isCloud()) || (m_rep0->isCloud() && m_rep1->isIFC())) {
-        auto differenceSection = gui()->properties()->add<Section>("Difference Detection", "diff_detect");
-        differenceSection->add<Number>("Observed Point Threshold", "ratio_threshold")->setMin(0.0).setMax(1.0).setDigits(3).setValue(0.7);
-        differenceSection->add<Number>("Min Points Per Square Unit Area", "points_per_square")->setMin(1).setMax(1000000).setDigits(3).setValue(1);
-        differenceSection->add<Number>("Distance Epsilon", "dist_eps")->setMin(0.00001).setMax(100.0).setDigits(5).setValue(0.1);
-        differenceSection->add<Button>("Detect", "Detect")->setCallback([&] () {
-        gui()->status()->set("Detecting differences...");
-        std::vector<int32_t> associations;
-        float ratio_threshold = gui()->properties()->get<Number>({"diff_detect", "ratio_threshold"})->value();
-        float points_per_square = gui()->properties()->get<Number>({"diff_detect", "points_per_square"})->value();
-        float eps = gui()->properties()->get<Number>({"diff_detect", "dist_eps"})->value();
-        std::vector<uint32_t> possible_hits, actual_hits;
+	if ((m_rep0->isIFC() && m_rep1->isCloud()) || (m_rep0->isCloud() && m_rep1->isIFC())) {
+		auto  differenceSection = gui()->properties()->add<Section>("Difference Detection", "diff_detect");
+		differenceSection->add<Number>("Observed Point Threshold", "ratio_threshold")->setMin(0.0).setMax(1.0).setDigits(3).setValue(0.7);
+		differenceSection->add<Number>("Min Points Per Square Unit Area", "points_per_square")->setMin(0.001).setMax(1000000).setDigits(3).setValue(1.0);
+		differenceSection->add<Number>("Distance Epsilon", "dist_eps")->setMin(0.00001).setMax(100.0).setDigits(5).setValue(0.1);
+		differenceSection->add<Button>("Detect", "Detect")->setCallback([&] () {
+		                                                                              gui()->status()->set("Detecting differences...");
+		                                                                   std::vector<int32_t> associations;
+		                                                                   float ratio_threshold = gui()->properties()->get<Number>({"diff_detect", "ratio_threshold"})->value();
+		                                                                   float points_per_square = gui()->properties()->get<Number>({"diff_detect", "points_per_square"})->value();
+		                                                                   float eps = gui()->properties()->get<Number>({"diff_detect", "dist_eps"})->value();
+		                                                                   std::vector<uint32_t> possible_hits, actual_hits;
 
-        Eigen::Affine3f t0, t1;
-        t0 = m_rep0->renderable()->transformation();
-        t1 = m_rep1->renderable()->transformation();
-        if (m_rep0->isIFC()) {
-            possible_hits.resize(m_rep1->cloud()->size(), 0);
-            actual_hits.resize(m_rep1->cloud()->size(), 0);
-            associations = duraark::associate_points<Point, OpenMesh::Vec4f>(m_rep0->objects(), m_rep1->cloud(), eps, possible_hits, actual_hits, m_rep1->cloudOrigins(), m_rep1->cloudSizes(), t0, t1);
-        } else {
-            possible_hits.resize(m_rep0->cloud()->size(), 0);
-            actual_hits.resize(m_rep0->cloud()->size(), 0);
-            associations = duraark::associate_points<Point, OpenMesh::Vec4f>(m_rep0->cloud(), m_rep1->objects(), eps, possible_hits, actual_hits, m_rep0->cloudOrigins(), m_rep0->cloudSizes(), t0, t1);
-        }
-        gui()->status()->set("Done detecting differences.");
-        gui()->log()->info("Found matching objects: " + std::to_string(associations.size()));
+		                                                                   Eigen::Affine3f t0, t1;
+		                                                                   t0 = m_rep0->transformation();
+		                                                                   t1 = m_rep1->transformation();
+		                                                                   if (m_rep0->isIFC()) {
+                                                                              possible_hits.resize(m_rep1->cloud()->size(), 0);
+                                                                              actual_hits.resize(m_rep1->cloud()->size(), 0);
+                                                                              associations = duraark::associate_points<Point, OpenMesh::Vec4f>(m_rep0->objects(), m_rep1->cloud(), eps, possible_hits, actual_hits, m_rep1->cloudOrigins(), m_rep1->cloudSizes(), t0, t1);
+                                                                           } else {
+                                                                              possible_hits.resize(m_rep0->cloud()->size(), 0);
+                                                                              actual_hits.resize(m_rep0->cloud()->size(), 0);
+                                                                              associations = duraark::associate_points<Point, OpenMesh::Vec4f>(m_rep0->cloud(), m_rep1->objects(), eps, possible_hits, actual_hits, m_rep0->cloudOrigins(), m_rep0->cloudSizes(), t0, t1);
+                                                                           }
+                                                                           gui()->status()->set("Done detecting differences.");
+                                                                           gui()->log()->info("Found matching objects: " + std::to_string(associations.size()));
 
-        m_rep0->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square);
-        m_rep1->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square);
-        });
-        //differenceSection->add<Button>("Add pos. from camera")->setCallback(
-            //[&] () {
-                //m_origin = std::make_shared<Rendered::Point>(fw()->transforms()->cameraPosition(), Colors::rgbaWhite(), 2);
-            //}
-        //);
-    }
+		                                                                   m_rep0->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square, this);
+		                                                                   m_rep1->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square, this);
+		});
+		// differenceSection->add<Button>("Add pos. from camera")->setCallback(
+		// [&] () {
+		// m_origin = std::make_shared<Rendered::Point>(fw()->transforms()->cameraPosition(), Colors::rgbaWhite(), 2);
+		// }
+		// );
+	}
 }
 
 void Registration::registerEvents() {
-    fw()->events()->connect<void (int, int, int, int)>("LEFT_DRAG", [&] (int dx, int dy, int, int) {
-        bool transformingA = gui()->modes()->group("TransformGroup")->option("TransformA")->active();
-        bool transformingB = gui()->modes()->group("TransformGroup")->option("TransformB")->active();
-        bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
+	fw()->events()->connect<void (int, int, int, int)>("LEFT_DRAG", [&] (int dx, int dy, int, int) {
+	                                                      bool transformingA = gui()->modes()->group("TransformGroup")->option("TransformA")->active();
+	                                                      bool transformingB = gui()->modes()->group("TransformGroup")->option("TransformB")->active();
+	                                                      bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
 
-        if (clipping) {
-            m_rep0->renderable()->delta_clipping_height(-dy * 0.01f);
-            m_rep1->renderable()->delta_clipping_height(-dy * 0.01f);
-        }
+	                                                      if (clipping) {
+	                                                         for (auto& r: m_rep0->renderables()) {
+	                                                            r->delta_clipping_height(-dy * 0.01f);
+																				}
+	                                                         for (auto& r: m_rep1->renderables()) {
+	                                                            r->delta_clipping_height(-dy * 0.01f);
+																				}
+																			}
 
-        if (transformingA || transformingB) {
-            Eigen::Affine3f trafo;
+	                                                      if (transformingA || transformingB) {
+	                                                         Eigen::Affine3f trafo;
 
-            if (!fw()->modifier()->shift()) {
-                auto mv = fw()->camera()->view_matrix();
-                Eigen::Vector3f right = mv.row(0).head(3);
-                Eigen::Vector3f up = mv.row(1).head(3);
-                float factor = fw()->modifier()->ctrl() ? 0.005f : 0.05f;
-                Eigen::Vector3f delta = factor * dx * right - factor * dy * up;
+	                                                         if (!fw()->modifier()->shift()) {
+	                                                            auto mv = fw()->camera()->view_matrix();
+	                                                            Eigen::Vector3f right = mv.row(0).head(3);
+	                                                            Eigen::Vector3f up = mv.row(1).head(3);
+	                                                            float factor = fw()->modifier()->ctrl() ? 0.005f : 0.05f;
+	                                                            Eigen::Vector3f delta = factor * dx * right - factor * dy * up;
 
-                trafo = Eigen::Translation<float, 3>(delta);
-            } else {
-                trafo = Eigen::AngleAxis<float>(0.02f * dx, fw()->camera()->forward());
-            }
+	                                                            trafo = Eigen::Translation<float, 3>(delta);
+																				} else {
+	                                                            trafo = Eigen::AngleAxis<float>(0.02f * dx, fw()->camera()->forward());
+																				}
 
-            if (transformingA) {
-                m_rep0->manualTransform(trafo);
-            } else if (transformingB) {
-                m_rep1->manualTransform(trafo);
-            }
-        }
-    });
+	                                                         if (transformingA) {
+	                                                            m_rep0->transform(trafo);
+																				} else if (transformingB) {
+	                                                            m_rep1->transform(trafo);
+																				}
+																			}
+																		});
 }
 
 void Registration::setICPParameters_() {
-    float  max_corr  = gui()->properties()->get<Number>({"Registration", "Advanced", "MaxCorrespondenceDistance"})->value();
-    float  trans_eps = gui()->properties()->get<Number>({"Registration", "Advanced", "TransformationEpsilon"})->value();
-    float  eucl_eps  = gui()->properties()->get<Number>({"Registration", "Advanced", "EuclideanFitnessEpsilon"})->value();
-    int    max_iter  = static_cast<int>(gui()->properties()->get<Number>({"Registration", "Advanced", "MaximumIterations"})->value());
-    m_registration->set_max_correspondence_distance(max_corr);
-    m_registration->set_transformation_epsilon(trans_eps);
-    m_registration->set_euclidean_fitness_epsilon(eucl_eps);
-    m_registration->set_maximum_iterations(max_iter);
+	float  max_corr  = gui()->properties()->get<Number>({"Registration", "Advanced", "MaxCorrespondenceDistance"})->value();
+	float  trans_eps = gui()->properties()->get<Number>({"Registration", "Advanced", "TransformationEpsilon"})->value();
+	float  eucl_eps  = gui()->properties()->get<Number>({"Registration", "Advanced", "EuclideanFitnessEpsilon"})->value();
+	int    max_iter  = static_cast<int>(gui()->properties()->get<Number>({"Registration", "Advanced", "MaximumIterations"})->value());
+	m_registration->set_max_correspondence_distance(max_corr);
+	m_registration->set_transformation_epsilon(trans_eps);
+	m_registration->set_euclidean_fitness_epsilon(eucl_eps);
+	m_registration->set_maximum_iterations(max_iter);
 }
 
 Registration::Factory::Factory() : FW::Factory() {
@@ -299,7 +315,7 @@ Registration::Representation::Representation(const std::vector<fs::path>& paths)
 		}
 		harmont::pointcloud_object<Cloud, boost::shared_ptr>::ptr_t  cloud_obj(new harmont::pointcloud_object<Cloud, boost::shared_ptr>(m_cloud));
 		cloud_obj->init();
-		m_renderable = cloud_obj;
+		m_renderables.push_back(cloud_obj);
 	} else if (path.extension() == ".obj") {
 		m_mesh = MeshPtr(new Mesh());
 		if (!MeshTraits::read(*m_mesh, path.string())) {
@@ -311,7 +327,7 @@ Registration::Representation::Representation(const std::vector<fs::path>& paths)
 		m_mesh->update_normals();
 		harmont::mesh_object<Mesh>::ptr_t  mesh_obj(new harmont::mesh_object<Mesh>(m_mesh, false));
 		mesh_obj->init();
-		m_renderable = mesh_obj;
+		m_renderables.push_back(mesh_obj);
 	} else if (path.extension() == ".ifc") {
 		m_objects = duraark::extract_objects<ColorType>(path);
 		m_mesh    = MeshPtr(new Mesh());
@@ -321,7 +337,7 @@ Registration::Representation::Representation(const std::vector<fs::path>& paths)
 		}
 		harmont::mesh_object<Mesh>::ptr_t  mesh_obj(new harmont::mesh_object<Mesh>(m_mesh, false));
 		mesh_obj->init();
-		m_renderable = mesh_obj;
+		m_renderables.push_back(mesh_obj);
 	} else {
 		throw std::runtime_error("Unknown file type");
 	}
@@ -330,26 +346,28 @@ Registration::Representation::Representation(const std::vector<fs::path>& paths)
 Registration::Representation::~Representation() {
 }
 
-harmont::renderable::ptr_t Registration::Representation::renderable() {
-	return m_renderable;
+Registration::Representation::Renderables& Registration::Representation::renderables() {
+	return m_renderables;
 }
 
-harmont::renderable::const_ptr_t Registration::Representation::renderable() const {
-	return m_renderable;
+const Registration::Representation::Renderables& Registration::Representation::renderables() const {
+	return m_renderables;
 }
 
 void Registration::Representation::center() {
-    Eigen::Vector3f centroid = Eigen::Vector3f::Zero();
-    if (isMesh() || isIFC()) {
-        centroid = cartan::mesh_algorithms<Mesh>::centroid(*m_mesh);
-    } else if (isCloud()) {
-        Eigen::Vector4f c;
-        pcl::compute3DCentroid(*m_cloud, c);
-        centroid = c.head(3);
-    }
-    Eigen::Matrix4f trafo = Eigen::Matrix4f::Identity();
-    trafo.block<3,1>(0, 3) = -centroid;
-    m_renderable->move(trafo);
+	Eigen::Vector3f  centroid = Eigen::Vector3f::Zero();
+	if (isMesh() || isIFC()) {
+		centroid = cartan::mesh_algorithms<Mesh>::centroid(*m_mesh);
+	} else if (isCloud()) {
+		Eigen::Vector4f  c;
+		pcl::compute3DCentroid(*m_cloud, c);
+		centroid = c.head(3);
+	}
+	Eigen::Matrix4f  trafo = Eigen::Matrix4f::Identity();
+	trafo.block<3, 1>(0, 3) = -centroid;
+	for (auto& r : m_renderables) {
+		r->move(trafo);
+	}
 }
 
 bool Registration::Representation::isCloud() const {
@@ -361,7 +379,7 @@ bool Registration::Representation::isMesh() const {
 }
 
 bool Registration::Representation::isIFC() const {
-    return (bool)(m_objects.size());
+	return (bool)(m_objects.size());
 }
 
 Cloud::Ptr Registration::Representation::cloud() {
@@ -373,11 +391,11 @@ Registration::Representation::MeshPtr Registration::Representation::mesh() {
 }
 
 duraark::ifc_objects_t<Registration::Representation::ColorType>& Registration::Representation::objects() {
-    return m_objects;
+	return m_objects;
 }
 
 const duraark::ifc_objects_t<Registration::Representation::ColorType>& Registration::Representation::objects() const {
-    return m_objects;
+	return m_objects;
 }
 
 const std::vector<uint32_t>& Registration::Representation::cloudSizes() const {
@@ -388,43 +406,75 @@ const std::vector<Eigen::Vector3f>& Registration::Representation::cloudOrigins()
 	return m_cloudOrigins;
 }
 
-void Registration::Representation::manualTransform(const TransformType& t) {
-    m_renderable->move(t.matrix());
+Registration::Representation::TransformType Registration::Representation::transformation() const {
+	TransformType  t;
+	t = m_renderables[0]->transformation();
+	return t;
 }
 
-void Registration::Representation::annotate(const std::vector<int32_t>& associations, const std::vector<uint32_t>& possible_hits, const std::vector<uint32_t>& actual_hits, float ratio_threshold, float points_per_square) {
-    if (m_cloud) {
-        auto assoc = duraark::to_object_map(associations, 0);
-        m_renderable->set_colors(Eigen::Vector4f(1.f, 0.f, 0.f, 0.3f));
-        for (const auto& a : assoc) {
-            std::vector<uint32_t> indices(a.second.begin(), a.second.end());
-            m_renderable->set_colors(indices, Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
+void Registration::Representation::transform(const TransformType& t) {
+	for (auto& r : m_renderables) {
+		r->move(t.matrix());
+	}
+}
+
+void Registration::Representation::annotate(const std::vector<int32_t>& associations, const std::vector<uint32_t>& possible_hits, const std::vector<uint32_t>& actual_hits, float ratio_threshold, float points_per_square, Visualizer* vis) {
+     //if (m_cloud) {
+        //auto assoc = duraark::to_object_map(associations, 0);
+        //m_renderable->set_colors(Eigen::Vector4f(1.f, 0.f, 0.f, 0.3f));
+        //for (const auto& a : assoc) {
+            //std::vector<uint32_t> indices(a.second.begin(), a.second.end());
+            //m_renderable->set_colors(indices, Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
+        //}
+     //}
+     if (m_objects.size()) {
+        m_renderables[0]->set_active(false);
+        if (m_renderables.size() > 1) {
+            for (uint32_t i = 0; i < m_objects.size(); ++i) {
+                vis->removeObject("annot_"+std::to_string(i));
+            }
+            Renderables::iterator second = m_renderables.begin();
+            ++second;
+            m_renderables.erase(second, m_renderables.end());
         }
-    }
-    if (m_objects.size()) {
-        m_renderable->set_colors(Eigen::Vector4f(1.f, 0.f, 0.f, 0.3f));
         uint32_t debug_count = 0;
         for (uint32_t i = 0; i < m_objects.size(); ++i) {
+            MeshPtr mesh(new Mesh());
+            *mesh = std::get<0>(m_objects[i]);
+
             // compute surface area
             float area = 0.f;
-            auto& mesh = std::get<0>(m_objects[i]);
-            for (auto face_iter = mesh.faces_begin(); face_iter != mesh.faces_end(); ++face_iter) {;
+            for (auto face_iter = mesh->faces_begin(); face_iter != mesh->faces_end(); ++face_iter) {
                 std::vector<Eigen::Vector3f> vertices;
-                for (auto fv_iter = mesh.cfv_iter(*face_iter); fv_iter; ++fv_iter) {
-                    vertices.push_back(Eigen::Vector3f(mesh.point(*fv_iter).data()));
+                for (auto fv_iter = mesh->cfv_iter(*face_iter); fv_iter; ++fv_iter) {
+                    vertices.push_back(Eigen::Vector3f(mesh->point(*fv_iter).data()));
                 }
                 float face_area = 0.5f * (vertices[1] - vertices[0]).cross(vertices[2]-vertices[0]).norm();
                 area += face_area;
             }
+            Mesh::Color color(1.f, 0.f, 0.f, 0.3f);
             if (static_cast<float>(actual_hits[i]) / possible_hits[i] >= ratio_threshold && static_cast<float>(possible_hits[i]) / area >= points_per_square) {
-                std::vector<uint32_t> indices(m_vertexMap[i].begin(), m_vertexMap[i].end());
-                std::cout << "now" << "\n";
-                m_renderable->set_colors(indices, Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
+            //if (possible_hits[i]) {
+                color = Mesh::Color(1.f, 1.f, 1.f, 1.f);
                 ++debug_count;
+            } else {
+                //if (static_cast<float>(actual_hits[i]) / possible_hits[i] < ratio_threshold) std::cout << "ratio_threshold" << "\n";
+                //if (static_cast<float>(possible_hits[i]) / area < points_per_square) std::cout << "area (" << (static_cast<float>(possible_hits[i]) / area) << " / " << points_per_square << ")\n";
             }
+
+            for (auto it = mesh->vertices_begin(); it != mesh->vertices_end(); ++it) {
+                mesh->set_color(*it, color);
+            }
+            harmont::mesh_object<Mesh>::ptr_t mesh_obj(new harmont::mesh_object<Mesh>(mesh, false));
+            mesh_obj->init();
+            mesh_obj->set_transformation(m_renderables[0]->transformation());
+            mesh_obj->set_clipping(m_renderables[0]->clipping());
+            mesh_obj->set_clipping_height(m_renderables[0]->clipping_height());
+            m_renderables.push_back(mesh_obj);
+            vis->addObject("annot_"+std::to_string(i), mesh_obj);
         }
         std::cout << "associated " << debug_count << " of " << m_objects.size() << " mesh objects." << "\n";
-    }
+     }
 }
 
 } // FW
