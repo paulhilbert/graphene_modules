@@ -39,8 +39,10 @@ class Registration : public FW::Visualizer {
         std::shared_ptr<Representation> m_rep0;
         std::shared_ptr<Representation> m_rep1;
         duraark::registration::ptr_t    m_registration;
-        //Rendered::Point::Ptr            m_origin;
 		float                           m_clippingHeight;
+		std::vector<uint32_t>           m_possibleHits;
+        std::vector<uint32_t>           m_actualHits;
+        std::vector<int32_t>            m_associations;
 };
 
 

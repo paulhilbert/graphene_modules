@@ -51,6 +51,8 @@ class Registration::Representation {
 
 		Renderables&       renderables();
 		const Renderables& renderables() const;
+        harmont::renderable_group::ptr_t group();
+        harmont::renderable_group::const_ptr_t group() const;
 		Cloud::Ptr cloud();
 		MeshPtr mesh();
 		duraark::ifc_objects_t<ColorType>& objects();
@@ -61,7 +63,7 @@ class Registration::Representation {
 		TransformType transformation() const;
 		void transform(const TransformType& t);
 
-		void annotate(const std::vector<int32_t>& associations, const std::vector<uint32_t>& possible_hits, const std::vector<uint32_t>& actual_hits, float ratio_threshold, float points_per_square, Visualizer* vis);
+		void annotate(const std::vector<int32_t>& associations, const std::vector<uint32_t>& possible_hits, const std::vector<uint32_t>& actual_hits, float ratio_threshold, float points_per_square, Visualizer* vis, const Eigen::Vector4f& np_col, const Eigen::Vector4f& mp_col, const Eigen::Vector4f fp_col);
 
 	protected:
 		std::vector<fs::path>              m_paths;
@@ -72,6 +74,7 @@ class Registration::Representation {
 		std::vector<std::vector<int>>      m_vertexMap;
 		std::vector<uint32_t>              m_cloudSizes;
 		std::vector<Eigen::Vector3f>       m_cloudOrigins;
+        harmont::renderable_group::ptr_t   m_group;
 };
 
 
@@ -115,15 +118,23 @@ void Registration::addProperties() {
 	showGroup->addOption("showClip", "Enable Clipping", std::string(ICON_PREFIX) + "clipping.png");
 
 	showGroup->setCallback([&] (std::string option, bool state) {
-	                          if (option == "showClip") {
-	                             for (auto& r: m_rep0->renderables()) {
-	                                r->set_clipping(state);
-										  }
-	                             for (auto& r: m_rep1->renderables()) {
-	                                r->set_clipping(state);
-										  }
-									  }
-								  });
+        if (option == "showClip") {
+            for (auto& r: m_rep0->renderables()) {
+                r->set_clipping(state);
+            }
+            for (auto& r: m_rep1->renderables()) {
+                r->set_clipping(state);
+            }
+            if (m_rep0->isIFC()) {
+                auto grp = m_rep0->group();
+                if (grp) grp->set_clipping(state);
+            }
+            if (m_rep1->isIFC()) {
+                auto grp = m_rep1->group();
+                if (grp) grp->set_clipping(state);
+            }
+        }
+    });
 
 	auto  transformGroup = gui()->modes()->addGroup("TransformGroup");
 	transformGroup->addOption("TransformA", "Transform A", std::string(ICON_PREFIX) + "transform_a_128.png");
@@ -196,6 +207,10 @@ void Registration::addProperties() {
 		differenceSection->add<Number>("Observed Point Threshold", "ratio_threshold")->setMin(0.0).setMax(1.0).setDigits(3).setValue(0.7);
 		differenceSection->add<Number>("Min Points Per Square Unit Area", "points_per_square")->setMin(0.001).setMax(1000000).setDigits(3).setValue(1.0);
 		differenceSection->add<Number>("Distance Epsilon", "dist_eps")->setMin(0.00001).setMax(100.0).setDigits(5).setValue(0.1);
+        auto diffCol = differenceSection->add<Group>("Colors", "colors");
+        diffCol->add<Color>("New Points", "new_points")->setValue(Eigen::Vector4f(0.2f, 0.2f, 0.8f, 1.f));
+        diffCol->add<Color>("Missing IFC Parts", "missing_parts")->setValue(Eigen::Vector4f(1.f, 0.f, 0.f, 1.f));
+        diffCol->add<Color>("Found IFC Parts", "found_parts")->setValue(Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
 		differenceSection->add<Button>("Detect", "Detect")->setCallback([&] () {
 		                                                                              gui()->status()->set("Detecting differences...");
 		                                                                   std::vector<int32_t> associations;
@@ -219,8 +234,27 @@ void Registration::addProperties() {
                                                                            gui()->status()->set("Done detecting differences.");
                                                                            gui()->log()->info("Found matching objects: " + std::to_string(associations.size()));
 
-		                                                                   m_rep0->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square, this);
-		                                                                   m_rep1->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square, this);
+                                                                           m_possibleHits = possible_hits;
+                                                                           m_actualHits = actual_hits;
+                                                                           m_associations = associations;
+
+                                                                           Eigen::Vector4f np_col = gui()->properties()->get<Color>({"diff_detect", "colors", "new_points"})->value();
+                                                                           Eigen::Vector4f mp_col = gui()->properties()->get<Color>({"diff_detect", "colors", "missing_parts"})->value();
+                                                                           Eigen::Vector4f fp_col = gui()->properties()->get<Color>({"diff_detect", "colors", "found_parts"})->value();
+		                                                                   m_rep0->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
+		                                                                   m_rep1->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
+
+                                                                           auto diffCol = gui()->properties()->get<Group>({"diff_detect", "colors"});
+                                                                           diffCol->add<Button>("Update Colors", "update")->setCallback([&] () {
+                                                                                Eigen::Vector4f np_col = gui()->properties()->get<Color>({"diff_detect", "colors", "new_points"})->value();
+                                                                                Eigen::Vector4f mp_col = gui()->properties()->get<Color>({"diff_detect", "colors", "missing_parts"})->value();
+                                                                                Eigen::Vector4f fp_col = gui()->properties()->get<Color>({"diff_detect", "colors", "found_parts"})->value();
+                                                                                float ratio_threshold = gui()->properties()->get<Number>({"diff_detect", "ratio_threshold"})->value();
+                                                                                float points_per_square = gui()->properties()->get<Number>({"diff_detect", "points_per_square"})->value();
+                                                                                m_rep0->annotate(m_associations, m_possibleHits, m_actualHits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
+                                                                                m_rep1->annotate(m_associations, m_possibleHits, m_actualHits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
+                                                                           });
+
 		});
 		// differenceSection->add<Button>("Add pos. from camera")->setCallback(
 		// [&] () {
@@ -232,41 +266,43 @@ void Registration::addProperties() {
 
 void Registration::registerEvents() {
 	fw()->events()->connect<void (int, int, int, int)>("LEFT_DRAG", [&] (int dx, int dy, int, int) {
-	                                                      bool transformingA = gui()->modes()->group("TransformGroup")->option("TransformA")->active();
-	                                                      bool transformingB = gui()->modes()->group("TransformGroup")->option("TransformB")->active();
-	                                                      bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
+        bool transformingA = gui()->modes()->group("TransformGroup")->option("TransformA")->active();
+        bool transformingB = gui()->modes()->group("TransformGroup")->option("TransformB")->active();
+        bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
 
-	                                                      if (clipping) {
-	                                                         for (auto& r: m_rep0->renderables()) {
-	                                                            r->delta_clipping_height(-dy * 0.01f);
-																				}
-	                                                         for (auto& r: m_rep1->renderables()) {
-	                                                            r->delta_clipping_height(-dy * 0.01f);
-																				}
-																			}
+        if (clipping) {
+            for (auto& r: m_rep0->renderables()) {
+                r->delta_clipping_height(-dy * 0.01f);
+            }
+            for (auto& r: m_rep1->renderables()) {
+                r->delta_clipping_height(-dy * 0.01f);
+            }
+            if (m_rep0->isIFC() && m_rep0->group()) m_rep0->group()->delta_clipping_height(-dy * 0.01f);
+            if (m_rep1->isIFC() && m_rep1->group()) m_rep1->group()->delta_clipping_height(-dy * 0.01f);
+        }
 
-	                                                      if (transformingA || transformingB) {
-	                                                         Eigen::Affine3f trafo;
+        if (transformingA || transformingB) {
+            Eigen::Affine3f trafo;
 
-	                                                         if (!fw()->modifier()->shift()) {
-	                                                            auto mv = fw()->camera()->view_matrix();
-	                                                            Eigen::Vector3f right = mv.row(0).head(3);
-	                                                            Eigen::Vector3f up = mv.row(1).head(3);
-	                                                            float factor = fw()->modifier()->ctrl() ? 0.005f : 0.05f;
-	                                                            Eigen::Vector3f delta = factor * dx * right - factor * dy * up;
+            if (!fw()->modifier()->shift()) {
+                auto mv = fw()->camera()->view_matrix();
+                Eigen::Vector3f right = mv.row(0).head(3);
+                Eigen::Vector3f up = mv.row(1).head(3);
+                float factor = fw()->modifier()->ctrl() ? 0.005f : 0.05f;
+                Eigen::Vector3f delta = factor * dx * right - factor * dy * up;
 
-	                                                            trafo = Eigen::Translation<float, 3>(delta);
-																				} else {
-	                                                            trafo = Eigen::AngleAxis<float>(0.02f * dx, fw()->camera()->forward());
-																				}
+                trafo = Eigen::Translation<float, 3>(delta);
+            } else {
+                trafo = Eigen::AngleAxis<float>(0.02f * dx, fw()->camera()->forward());
+            }
 
-	                                                         if (transformingA) {
-	                                                            m_rep0->transform(trafo);
-																				} else if (transformingB) {
-	                                                            m_rep1->transform(trafo);
-																				}
-																			}
-																		});
+            if (transformingA) {
+                m_rep0->transform(trafo);
+            } else if (transformingB) {
+                m_rep1->transform(trafo);
+            }
+        }
+    });
 }
 
 void Registration::setICPParameters_() {
@@ -354,6 +390,14 @@ const Registration::Representation::Renderables& Registration::Representation::r
 	return m_renderables;
 }
 
+harmont::renderable_group::ptr_t Registration::Representation::group() {
+    return m_group;
+}
+
+harmont::renderable_group::const_ptr_t Registration::Representation::group() const {
+    return m_group;
+}
+
 void Registration::Representation::center() {
 	Eigen::Vector3f  centroid = Eigen::Vector3f::Zero();
 	if (isMesh() || isIFC()) {
@@ -418,26 +462,55 @@ void Registration::Representation::transform(const TransformType& t) {
 	}
 }
 
-void Registration::Representation::annotate(const std::vector<int32_t>& associations, const std::vector<uint32_t>& possible_hits, const std::vector<uint32_t>& actual_hits, float ratio_threshold, float points_per_square, Visualizer* vis) {
-     //if (m_cloud) {
-        //auto assoc = duraark::to_object_map(associations, 0);
-        //m_renderable->set_colors(Eigen::Vector4f(1.f, 0.f, 0.f, 0.3f));
-        //for (const auto& a : assoc) {
-            //std::vector<uint32_t> indices(a.second.begin(), a.second.end());
-            //m_renderable->set_colors(indices, Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
-        //}
-     //}
-     if (m_objects.size()) {
+void Registration::Representation::annotate(const std::vector<int32_t>& associations, const std::vector<uint32_t>& possible_hits, const std::vector<uint32_t>& actual_hits, float ratio_threshold, float points_per_square, Visualizer* vis, const Eigen::Vector4f& np_col, const Eigen::Vector4f& mp_col, const Eigen::Vector4f fp_col) {
+    if (m_cloud) {
         m_renderables[0]->set_active(false);
         if (m_renderables.size() > 1) {
-            for (uint32_t i = 0; i < m_objects.size(); ++i) {
-                vis->removeObject("annot_"+std::to_string(i));
-            }
-            Renderables::iterator second = m_renderables.begin();
-            ++second;
-            m_renderables.erase(second, m_renderables.end());
+            //vis->removeObject("cloud_annot_a");
+            vis->removeObject("cloud_annot_b");
+            m_renderables.erase(m_renderables.begin() + 1, m_renderables.end());
+        }
+        auto assoc = duraark::to_object_map(associations, 0);
+        std::set<uint32_t> associated, iota;
+        for (uint32_t i = 0; i < m_cloud->size(); ++i) {
+            iota.insert(i);
+        }
+        for (const auto& a : assoc) {
+            associated.insert(a.second.begin(), a.second.end());
+        }
+        std::vector<uint32_t> extra;
+        std::set_difference(iota.begin(), iota.end(), associated.begin(), associated.end(), std::back_inserter(extra));
+        std::vector<int> a(associated.begin(), associated.end()), b(extra.begin(), extra.end());
+
+        //Cloud::Ptr cloudA(new Cloud(*m_cloud, a));
+		//harmont::pointcloud_object<Cloud, boost::shared_ptr>::ptr_t  cloudObjA(new harmont::pointcloud_object<Cloud, boost::shared_ptr>(cloudA));
+		//cloudObjA->init();
+        //cloudObjA->set_transformation(m_renderables.front()->transformation());
+        //cloudObjA->set_point_colors(Eigen::Vector4f(1.f, 1.f, 1.f, 0.f));
+        //cloudObjA->set_clipping(m_renderables.front()->clipping());
+        //cloudObjA->set_clipping_height(m_renderables.front()->clipping_height());
+		//m_renderables.push_back(cloudObjA);
+        //vis->addObject("cloud_annot_a", cloudObjA);
+
+        Cloud::Ptr cloudB(new Cloud(*m_cloud, b));
+		harmont::pointcloud_object<Cloud, boost::shared_ptr>::ptr_t  cloudObjB(new harmont::pointcloud_object<Cloud, boost::shared_ptr>(cloudB));
+		cloudObjB->init();
+        cloudObjB->set_transformation(m_renderables.front()->transformation());
+        cloudObjB->set_point_colors(np_col);
+        cloudObjB->set_clipping(m_renderables.front()->clipping());
+        cloudObjB->set_clipping_height(m_renderables.front()->clipping_height());
+		m_renderables.push_back(cloudObjB);
+        vis->addObject("cloud_annot_b", cloudObjB);
+    }
+    if (m_objects.size()) {
+        m_renderables[0]->set_active(false);
+        if (m_group) {
+            vis->removeObjectGroup("annot_");
+            m_group.reset();
         }
         uint32_t debug_count = 0;
+
+        std::vector<harmont::renderable::ptr_t> group;
         for (uint32_t i = 0; i < m_objects.size(); ++i) {
             MeshPtr mesh(new Mesh());
             *mesh = std::get<0>(m_objects[i]);
@@ -452,10 +525,10 @@ void Registration::Representation::annotate(const std::vector<int32_t>& associat
                 float face_area = 0.5f * (vertices[1] - vertices[0]).cross(vertices[2]-vertices[0]).norm();
                 area += face_area;
             }
-            Mesh::Color color(1.f, 0.f, 0.f, 0.3f);
+            Mesh::Color color(mp_col.data());
             if (static_cast<float>(actual_hits[i]) / possible_hits[i] >= ratio_threshold && static_cast<float>(possible_hits[i]) / area >= points_per_square) {
             //if (possible_hits[i]) {
-                color = Mesh::Color(1.f, 1.f, 1.f, 1.f);
+                color = Mesh::Color(fp_col.data());
                 ++debug_count;
             } else {
                 //if (static_cast<float>(actual_hits[i]) / possible_hits[i] < ratio_threshold) std::cout << "ratio_threshold" << "\n";
@@ -468,11 +541,12 @@ void Registration::Representation::annotate(const std::vector<int32_t>& associat
             harmont::mesh_object<Mesh>::ptr_t mesh_obj(new harmont::mesh_object<Mesh>(mesh, false));
             mesh_obj->init();
             mesh_obj->set_transformation(m_renderables[0]->transformation());
-            mesh_obj->set_clipping(m_renderables[0]->clipping());
-            mesh_obj->set_clipping_height(m_renderables[0]->clipping_height());
-            m_renderables.push_back(mesh_obj);
-            vis->addObject("annot_"+std::to_string(i), mesh_obj);
+            group.push_back(mesh_obj);
         }
+        m_group = std::make_shared<harmont::renderable_group>(group);
+        m_group->set_clipping(m_renderables.front()->clipping());
+        m_group->set_clipping_height(m_renderables.front()->clipping_height());
+        vis->addObjectGroup("annot_", m_group);
         std::cout << "associated " << debug_count << " of " << m_objects.size() << " mesh objects." << "\n";
      }
 }
