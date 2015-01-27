@@ -1,4 +1,4 @@
-#include "MeshRender.h"
+#include <MeshRender.h>
 
 
 namespace FW {
@@ -14,20 +14,34 @@ void MeshRender::init() {
         gui()->log()->error("Mesh file \"" + m_meshFile.string() + "\" does not exist.");
         return;
     }
-    m_mesh = std::make_shared<RenderedMeshT>(m_meshFile.string(), false);
+    std::cout << "load mesh" << "\n";
+    try {
+        m_mesh = std::make_shared<RenderedMeshT>(m_meshFile.string(), false);
+    } catch (std::exception& e) {
+        std::cout << e.what() << "\n";
+        return;
+    }
+    std::cout << "load transp mesh" << "\n";
     m_meshTransp = std::make_shared<RenderedMeshT>(m_meshFile.string(), false);
 	gui()->log()->info("Loaded mesh with "+lexical_cast<std::string>(m_mesh->mesh()->n_vertices())+" vertices and "+lexical_cast<std::string>(m_mesh->mesh()->n_faces())+" faces.");
 
+    std::cout << "mesh init" << "\n";
     m_mesh->init();
     m_meshTransp->init();
+    std::cout << "toggle invert" << "\n";
     m_meshTransp->toggle_invert_clipping();
-    m_meshTransp->set_colors(Eigen::Vector4f(1.f, 0.f, 0.f, 1.0f));
+    std::cout << "set colors" << "\n";
+    m_meshTransp->set_vertex_colors(Eigen::Vector4f(1.f, 0.f, 0.f, 1.0f));
 
+    std::cout << "add objects" << "\n";
     addObject("main mesh", m_mesh);
     addObject("transp mesh", m_meshTransp);
 
+    std::cout << "add props" << "\n";
 	addProperties();
+    std::cout << "add modes" << "\n";
     addModes();
+    std::cout << "register events" << "\n";
 	registerEvents();
 }
 

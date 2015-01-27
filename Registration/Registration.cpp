@@ -245,15 +245,23 @@ void Registration::addProperties() {
 		                                                                   m_rep1->annotate(associations, possible_hits, actual_hits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
 
                                                                            auto diffCol = gui()->properties()->get<Group>({"diff_detect", "colors"});
-                                                                           diffCol->add<Button>("Update Colors", "update")->setCallback([&] () {
-                                                                                Eigen::Vector4f np_col = gui()->properties()->get<Color>({"diff_detect", "colors", "new_points"})->value();
-                                                                                Eigen::Vector4f mp_col = gui()->properties()->get<Color>({"diff_detect", "colors", "missing_parts"})->value();
-                                                                                Eigen::Vector4f fp_col = gui()->properties()->get<Color>({"diff_detect", "colors", "found_parts"})->value();
-                                                                                float ratio_threshold = gui()->properties()->get<Number>({"diff_detect", "ratio_threshold"})->value();
-                                                                                float points_per_square = gui()->properties()->get<Number>({"diff_detect", "points_per_square"})->value();
-                                                                                m_rep0->annotate(m_associations, m_possibleHits, m_actualHits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
-                                                                                m_rep1->annotate(m_associations, m_possibleHits, m_actualHits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
-                                                                           });
+                                                                           bool has_button = true;
+                                                                           try {
+                                                                                diffCol->get<Button>({"update"});
+                                                                           } catch(...) {
+                                                                               has_button = false;
+                                                                           }
+                                                                           if (!has_button) {
+                                                                               diffCol->add<Button>("Update Colors", "update")->setCallback([&] () {
+                                                                                    Eigen::Vector4f np_col = gui()->properties()->get<Color>({"diff_detect", "colors", "new_points"})->value();
+                                                                                    Eigen::Vector4f mp_col = gui()->properties()->get<Color>({"diff_detect", "colors", "missing_parts"})->value();
+                                                                                    Eigen::Vector4f fp_col = gui()->properties()->get<Color>({"diff_detect", "colors", "found_parts"})->value();
+                                                                                    float ratio_threshold = gui()->properties()->get<Number>({"diff_detect", "ratio_threshold"})->value();
+                                                                                    float points_per_square = gui()->properties()->get<Number>({"diff_detect", "points_per_square"})->value();
+                                                                                    m_rep0->annotate(m_associations, m_possibleHits, m_actualHits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
+                                                                                    m_rep1->annotate(m_associations, m_possibleHits, m_actualHits, ratio_threshold, points_per_square, this, np_col, mp_col, fp_col);
+                                                                               });
+                                                                           }
 
 		});
 		// differenceSection->add<Button>("Add pos. from camera")->setCallback(
