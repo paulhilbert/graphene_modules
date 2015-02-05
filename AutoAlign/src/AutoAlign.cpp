@@ -22,6 +22,7 @@ void AutoAlign::init() {
     m_ifcObjects = duraark::extract_objects<Color>(m_path, true);
     Eigen::Vector3f center = Eigen::Vector3f::Zero();
     uint32_t idx = 0;
+    std::vector<harmont::renderable::ptr_t> objects;
     for (auto& ifcObject : m_ifcObjects) {
         auto& mesh = std::get<0>(ifcObject);
         for (auto it = mesh.vertices_begin(); it != mesh.vertices_end(); ++it) {
@@ -29,10 +30,9 @@ void AutoAlign::init() {
         }
         std::shared_ptr<Mesh> mesh_ptr(new Mesh());
         *mesh_ptr = mesh;
-        auto object = std::make_shared<Object>(mesh_ptr, false);
-        object->init();
-        m_objects.push_back(object);
-        addObject(std::get<1>(ifcObject), object);
+        harmont::renderable::ptr_t object = std::make_shared<Object>(mesh_ptr, false);
+        objects.push_back(object);
+        //addObject(std::get<1>(ifcObject), object);
 
         center *= static_cast<float>(idx++);
         center += object->bounding_box().center();
@@ -40,14 +40,16 @@ void AutoAlign::init() {
 
         std::string type = std::get<2>(ifcObject);
         if (m_classMap.find(type) == m_classMap.end()) m_classMap[type] = std::vector<uint32_t>();
-        m_classMap[type].push_back(m_objects.size() - 1);
+        m_classMap[type].push_back(objects.size() - 1);
     }
+
+    m_objectGroup = harmont::renderable_group::ptr_t(new harmont::renderable_group(objects));
+    m_objectGroup->init();
+    addObjectGroup("objects", m_objectGroup);
 
     Eigen::Matrix4f translation = Eigen::Matrix4f::Identity();
     translation.block<3,1>(0, 3) = -center;
-    for (auto obj : m_objects) {
-        obj->move(translation);
-    }
+    m_objectGroup->move(translation);
 
     createOptixStructure();
 
@@ -64,7 +66,7 @@ void AutoAlign::addProperties() {
         prop->setCallback(
             [&, type] (bool state) {
                 for (auto obj_idx : m_classMap[type]) {
-                    m_objects[obj_idx]->set_active(state);
+                    m_objectGroup->objects()[obj_idx]->set_active(state);
                 }
             }
         );
@@ -75,9 +77,7 @@ void AutoAlign::addProperties() {
 
 	showGroup->setCallback([&] (std::string option, bool state) {
         if (option == "showClip") {
-            for (auto& obj: m_objects) {
-                obj->set_clipping(state);
-            }
+            m_objectGroup->set_clipping(state);
         }
     });
 
@@ -92,9 +92,7 @@ void AutoAlign::registerEvents() {
         bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
 
         if (clipping) {
-            for (auto& obj: m_objects) {
-                obj->delta_clipping_height(-dy * 0.01f);
-            }
+            m_objectGroup->delta_clipping_height(-dy * 0.01f);
         }
     });
 
@@ -103,13 +101,15 @@ void AutoAlign::registerEvents() {
         std::tie(origin, dir) = fw()->camera()->pick_ray(x, y);
         boost::optional<uint32_t> hovered = selectObject(origin, dir);
         if (m_lastHovered) {
-            m_objects[m_lastHovered.get()]->set_vertex_colors(Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
+            Object::ptr_t obj = std::dynamic_pointer_cast<Object>(m_objectGroup->objects()[m_lastHovered.get()]);
+            obj->set_vertex_colors(Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
         }
         if (hovered) {
             std::string guid, type;
             std::tie(std::ignore, guid, type) = m_ifcObjects[*hovered];
             gui()->status()->set("Selected object \"" + guid + "\" :: " + type);
-            m_objects[hovered.get()]->set_vertex_colors(Eigen::Vector4f(0.5f, 0.f, 0.f, 0.3f));
+            Object::ptr_t obj = std::dynamic_pointer_cast<Object>(m_objectGroup->objects()[hovered.get()]);
+            obj->set_vertex_colors(Eigen::Vector4f(0.5f, 0.f, 0.f, 0.3f));
         } else {
             gui()->status()->clear();
         }
@@ -121,7 +121,7 @@ void AutoAlign::createOptixStructure() {
     int32_t object_idx = 0, triangle_idx = 0;
     for (const auto& object : m_ifcObjects) {
         Eigen::Affine3f trans;
-        trans = m_objects[object_idx]->transformation();
+        trans = m_objectGroup->objects()[object_idx]->transformation();
         uint32_t num_faces = std::get<0>(object).n_faces();
         std::vector<int32_t> tmp(num_faces, object_idx++);
         m_optixObjectMap.insert(m_optixObjectMap.end(), tmp.begin(), tmp.end());
@@ -174,7 +174,7 @@ boost::optional<uint32_t> AutoAlign::selectObject(const Eigen::Vector3f& origin,
 
 
     int triHit = hit[1];
-    if (triHit >= 0 && m_objects[m_optixObjectMap[triHit]]->active()) {
+    if (triHit >= 0 && m_objectGroup->objects()[m_optixObjectMap[triHit]]->active()) {
         return static_cast<uint32_t>(m_optixObjectMap[triHit]);
     }
 
@@ -287,14 +287,14 @@ void AutoAlign::extractWallPlanes() {
                 mt::eigen_vec3_t nrm = mt::eigen_face_normal(mesh, face);
                 mt::eigen_vec3_t start_nrm = mt::eigen_face_normal(mesh, start_face);
                 // not in component if not vertical...
-                if (fabs(nrm[2]) > 0.01f) return false;
+                if (fabs(nrm[2]) > 0.05f) return false;
                 // ...or if not colinear to start face
                 if (1.f - fabs(nrm.dot(start_nrm)) > Eigen::NumTraits<float>::dummy_precision()) return false;
                 return true;
             },
             [&] (entity_t start_face) {
                 mt::eigen_vec3_t nrm = mt::eigen_face_normal(mesh, start_face);
-                return fabs(nrm[2]) < 0.01f;
+                return fabs(nrm[2]) < 0.05f;
             }
         );
 
@@ -334,7 +334,7 @@ void AutoAlign::extractWallPlanes() {
             auto rendered = std::make_shared<Object>(component_mesh, false);
             rendered->init();
             rendered->set_face_colors(colors[color_idx++]);
-            rendered->set_transformation(m_objects[c]->transformation());
+            rendered->set_transformation(m_objectGroup->objects()[c]->transformation());
             addObject("obj_"+std::to_string(i)+"_component_"+std::to_string(c), rendered);
             //break;
         }

@@ -50,7 +50,7 @@ class AutoAlign : public FW::Visualizer {
     protected:
         fs::path                                      m_path;
         IfcObjects                                    m_ifcObjects;
-        std::vector<Object::ptr_t>                    m_objects;
+        harmont::renderable_group::ptr_t              m_objectGroup;
         std::map<std::string, std::vector<uint32_t>>  m_classMap;
         optix::prime::Context                         m_optixContext;
         optix::prime::Model                           m_optixModel;
