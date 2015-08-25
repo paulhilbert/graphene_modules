@@ -15,6 +15,7 @@
 #include <cartan/openmesh_traits.hpp>
 #include <cartan/mesh_algorithms.hpp>
 #include <duraark/extract_objects.hpp>
+#include <duraark/align.hpp>
 
 
 namespace FW {
@@ -46,6 +47,7 @@ class AutoAlign : public FW::Visualizer {
         void createOptixStructure();
         boost::optional<uint32_t> selectObject(const Eigen::Vector3f& origin, const Eigen::Vector3f& dir);
         void extractWallPlanes();
+        std::vector<Eigen::Vector3f> planesTo2DLines(const std::vector<duraark::plane_t>& planes);
 
     protected:
         fs::path                                      m_path;

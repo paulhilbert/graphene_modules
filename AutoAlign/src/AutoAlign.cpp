@@ -1,10 +1,8 @@
 #include "AutoAlign.h"
 
 #include <Library/Colors/Generation.h>
-#include <duraark/traverse.hpp>
 
 using namespace GUI::Property;
-
 
 #define OPTIX_BUF_TYPE RTP_BUFFER_TYPE_HOST      // RTP_BUFFER_TYPE_CUDA_LINEAR
 
@@ -259,87 +257,36 @@ boost::optional<uint32_t> AutoAlign::selectObject(const Eigen::Vector3f& origin,
 //}
 
 void AutoAlign::extractWallPlanes() {
-    typedef cartan::mesh_traits<Mesh> mt;
-    typedef mt::face_handle_t entity_t;
-    typedef duraark::connected_component_t<entity_t> component_t;
-    typedef duraark::connected_components_t<entity_t> components_t;
+    Eigen::Matrix4f t_z = m_objectGroup->transformation();
+    std::vector<duraark::plane_t> planes = duraark::ifc_wall_planes<Mesh>(t_z, m_ifcObjects);
+    std::vector<Eigen::Vector3f> lines = planesTo2DLines(planes);
+    harmont::lines_object::ptr_t lines_obj = std::make_shared<harmont::lines_object>(lines, Eigen::Vector4f(0.f, 0.f, 1.f, 1.f));
+    lines_obj->init();
+    addObject("ifc_lines", lines_obj);
+}
 
-    m_wallComponents.clear();
-    for (const auto& obj : m_ifcObjects) {
-        std::string type = std::get<2>(obj);
-        if (type != "ifcwall" && type != "ifcwallstandardcase") {
-            m_wallComponents.push_back(std::vector<std::set<uint32_t>>());
-            continue;
-        }
-        const Mesh& mesh = std::get<0>(obj);
+std::vector<Eigen::Vector3f> AutoAlign::planesTo2DLines(const std::vector<duraark::plane_t>& planes) {
+    auto bbox = m_objectGroup->bounding_box();
+    Eigen::Vector2f bb_min = bbox.min().head(2);
+    Eigen::Vector2f bb_max = bbox.max().head(2);
+    Eigen::Vector3f center = bbox.center();
+    float r = 0.5f * (bb_max - bb_min).norm();
 
-        auto faces = mt::face_handles(mesh);
+    std::vector<Eigen::Vector3f> lines(2 * planes.size());
+    uint32_t idx = 0;
+    for (const auto& plane : planes) {
+        Eigen::Vector2f o = plane.projection(center).head(2);
+        Eigen::Vector2f d = Eigen::Vector2f(-plane.normal()[1], plane.normal()[0]).normalized();
 
-        // precompute face normals
-        //std::vector<mt::eigen_vec3_t> normals(mt::num_faces(mesh));
-        //std::transform(faces.begin(), faces.end(), normals.begin(), [&] (mt::face_handle_t f) { return mt::eigen_face_normal(mesh, f); });
-
-        auto get_neighbors = [&] (entity_t face) { return mt::adjacent_faces(mesh, face); };
-        components_t components = duraark::connected_components(
-            faces,
-            get_neighbors,
-            [&] (entity_t face, entity_t start_face) {
-                mt::eigen_vec3_t nrm = mt::eigen_face_normal(mesh, face);
-                mt::eigen_vec3_t start_nrm = mt::eigen_face_normal(mesh, start_face);
-                // not in component if not vertical...
-                if (fabs(nrm[2]) > 0.05f) return false;
-                // ...or if not colinear to start face
-                if (1.f - fabs(nrm.dot(start_nrm)) > Eigen::NumTraits<float>::dummy_precision()) return false;
-                return true;
-            },
-            [&] (entity_t start_face) {
-                mt::eigen_vec3_t nrm = mt::eigen_face_normal(mesh, start_face);
-                return fabs(nrm[2]) < 0.05f;
-            }
-        );
-
-        // convert to indices
-        std::vector<std::set<uint32_t>> result(components.size());
-        std::transform(
-            components.begin(),
-            components.end(),
-            result.begin(),
-            [&] (const component_t& comp) {
-                std::set<uint32_t> idx_comp;
-                for (const auto& entity : comp) {
-                    uint32_t idx = entity.idx();
-                    idx_comp.insert(idx);
-                }
-                return idx_comp;
-            }
-        );
-
-        m_wallComponents.push_back(result);
+        float lambda = sqrt(r*r - (center.head(2)-o).squaredNorm());
+        Eigen::Vector3f p0, p1;
+        p0 << (o - lambda * d), 0.f;
+        p1 << (o + lambda * d), 0.f;
+        lines[idx++] = p0;
+        lines[idx++] = p1;
     }
 
-    for (uint32_t i = 0; i < m_wallComponents.size(); ++i) {
-        typedef cartan::mesh_traits<Mesh> mt;
-
-        const auto& components = m_wallComponents[i];
-        const auto& mesh = std::get<0>(m_ifcObjects[i]);
-
-        uint32_t plane_count = std::count_if(components.begin(), components.end(), [&] (auto c) { return c.size() > 0; });
-        std::vector<RGBA> colors = Colors::Generation::shuffledColorsRGBA(plane_count, {0.f, 2.f*M_PI}, {1.f, 1.f}, {1.f, 1.f}, 1.f);
-        uint32_t color_idx = 0;
-
-        for (uint32_t c = 0; c < components.size(); ++c) {
-            if (components[c].size() < 1) continue;
-            std::vector<uint32_t> subset(components[c].begin(), components[c].end());
-            auto component_mesh = mt::mesh_from_face_subset(mesh, subset);
-            auto rendered = std::make_shared<Object>(component_mesh, false);
-            rendered->init();
-            rendered->set_face_colors(colors[color_idx++]);
-            rendered->set_transformation(m_objectGroup->objects()[c]->transformation());
-            addObject("obj_"+std::to_string(i)+"_component_"+std::to_string(c), rendered);
-            //break;
-        }
-        //break;
-    }
+    return lines;
 }
 
 AutoAlign::Factory::Factory() : FW::Factory() {

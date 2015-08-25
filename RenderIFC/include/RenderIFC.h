@@ -1,6 +1,11 @@
 #ifndef RenderIFCVIS_H_
 #define RenderIFCVIS_H_
 
+#include <boost/optional.hpp>
+#include <boost/none.hpp>
+
+#include <optix_prime/optix_primepp.h>
+
 #include <FW/FWVisualizer.h>
 #include <FW/FWFactory.h>
 
@@ -35,10 +40,21 @@ class RenderIFC : public FW::Visualizer {
 		void registerEvents();
 
     protected:
+        void createOptixStructure();
+        boost::optional<uint32_t> selectObject(const Eigen::Vector3f& origin, const Eigen::Vector3f& dir);
+
+    protected:
         fs::path                                      m_path;
         IfcObjects                                    m_ifcObjects;
-        std::vector<Object::ptr_t>                    m_objects;
+        std::vector<Eigen::Vector4f>                  m_colors;
+        //std::vector<Object::ptr_t>                    m_objects;
+        harmont::renderable_group::ptr_t              m_objects;
         std::map<std::string, std::vector<uint32_t>>  m_classMap;
+        optix::prime::Context                         m_optixContext;
+        optix::prime::Model                           m_optixModel;
+        std::vector<float>                            m_optixTriangles;
+        std::vector<int32_t>                          m_optixObjectMap;
+        boost::optional<uint32_t>                     m_lastHovered;
 };
 
 
