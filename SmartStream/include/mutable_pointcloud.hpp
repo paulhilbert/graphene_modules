@@ -39,6 +39,8 @@ class mutable_pointcloud {
 
         mutable_pointcloud::renderable_t::ptr_t init(uint32_t num_points);
 
+        void finish();
+
         void add_data(cloud_normal_t::ConstPtr data);
 
         void damage();
@@ -49,13 +51,23 @@ class mutable_pointcloud {
         void with_vertex_data(F&& func) const;
 
     protected:
+        void process_data();
+
+    protected:
+        // cloud management
         std::mutex cloud_mutex_;
-        vertex_data_t vertex_data_;
         renderable_t::ptr_t cloud_;
+        // data management
+        vertex_data_t vertex_data_;
+        std::mutex data_mutex_;
+        std::deque<cloud_normal_t::ConstPtr> data_queue_;
+        std::shared_ptr<std::thread> data_thread_;
+
         bbox3f_t bbox_;
         uint32_t last_point_idx_;
         uint32_t range_start_;
         bool damaged_;
+        bool finished_;
 };
 
 

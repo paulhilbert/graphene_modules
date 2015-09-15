@@ -77,6 +77,7 @@ void vis_client::render_poll() {
     if (current_room_) {
         current_room_->render_poll();
         if (finished_room_) {
+            current_room_->finish();
             current_room_.reset();
             std::cout << "finished room" << "\n";
             idle_ = true;
