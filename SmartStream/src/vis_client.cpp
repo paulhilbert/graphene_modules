@@ -32,6 +32,13 @@ const merged_global_data_t& vis_client::global_data() const {
 }
 
 void vis_client::request_room(int room_idx, FW::SmartStream* vis) {
+    bool already_has_object = false;
+    try {
+        auto dummy = vis->object("room_" + std::to_string(room_idx));
+        already_has_object = true;
+    } catch (...) {}
+    if (already_has_object) return;
+
     idle_ = false;
     // determine patches
     Arr::Face_handle f = face_map_[room_idx];

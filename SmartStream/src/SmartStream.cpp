@@ -24,7 +24,7 @@ using namespace pcl_compress;
 namespace FW {
 
 
-SmartStream::SmartStream(std::string id, const std::string& host, const std::string& port) : Visualizer(id), host_(host), port_(port) {
+SmartStream::SmartStream(std::string id, const std::string& host, const std::string& port) : Visualizer(id), host_(host), port_(port), crt_face_(-1), tracking_(false) {
 }
 
 SmartStream::~SmartStream() {
@@ -93,30 +93,47 @@ void SmartStream::addProperties() {
         ////stream_thread_->join();
     //});
 
-	//auto  showGroup = gui()->modes()->addGroup("showGroup");
-	//showGroup->addOption("showClip", "Enable Clipping", std::string(ICON_PREFIX) + "clipping.png");
+    auto track_btn = gui()->properties()->add<ToggleButton>("Track Camera", "track");
+    track_btn->setValue(false);
+    track_btn->setCallback([&] (bool state) { tracking_ = state; });
 
-	//showGroup->setCallback([&] (std::string option, bool state) {
-        //if (option == "showClip") {
-            //group_->set_clipping(state);
-        //}
-    //});
 
-	//auto  transformGroup = gui()->modes()->addGroup("TransformGroup");
-	//transformGroup->addOption("Clip", "Modify Clipping Plane", std::string(ICON_PREFIX) + "clipplane.png");
+    auto  showGroup = gui()->modes()->addGroup("showGroup");
+    showGroup->addOption("showClip", "Enable Clipping", std::string(ICON_PREFIX) + "clipping.png");
+
+    showGroup->setCallback([&] (std::string option, bool state) {
+        if (option == "showClip") {
+            auto objs = objects();
+            for (auto& obj : objs) {
+                const char test[] = "room";
+                if (obj.first.length() >= 4 && strncmp(obj.first.c_str(), test, 4) == 0) {
+                    obj.second->set_clipping(state);
+                }
+            }
+        }
+    });
+
+    auto  transformGroup = gui()->modes()->addGroup("TransformGroup");
+    transformGroup->addOption("Clip", "Modify Clipping Plane", std::string(ICON_PREFIX) + "clipplane.png");
 }
 
 void SmartStream::registerEvents() {
-	//fw()->events()->connect<void (int, int, int, int)>("LEFT_DRAG", [&] (int dx, int dy, int, int) {
-        //bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
+    fw()->events()->connect<void (int, int, int, int)>("LEFT_DRAG", [&] (int dx, int dy, int, int) {
+        bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
 
-        //if (clipping) {
-            //group_->delta_clipping_height(-dy * 0.01f);
-        //}
-    //});
+        if (clipping) {
+            auto objs = objects();
+            for (auto& obj : objs) {
+                const char test[] = "room";
+                if (obj.first.length() >= 4 && strncmp(obj.first.c_str(), test, 4) == 0) {
+                    obj.second->delta_clipping_height(-dy * 0.01f);
+                }
+            }
+        }
+    });
 
     fw()->events()->connect<void(int, int)>("LEFT_CLICK", [&](int x, int y) {
-        if (!client_->idle()) return;
+//      if (!client_->idle()) return;
         Eigen::Vector3f pointerPos = fw()->camera()->position();//Eigen::Vector3f::Zero();
         //Eigen::Vector3f pickRayOrigin = Eigen::Vector3f::Zero();
         //Eigen::Vector3f pickRayDirection = Eigen::Vector3f::Zero();
@@ -136,12 +153,16 @@ void SmartStream::registerEvents() {
             return;
         }
 
+        if (pickedFace.get()->data()->index == crt_face_) return;
+
+
         //std::set<int> set_new({pickedFace.get()->data()->index}), set_old;
         //update(set_new, set_old);
 
         std::vector<int> new_scans, old_scans;
         computeNewSets(new_scans, old_scans, *pickedFace);
         update(new_scans, old_scans);
+        crt_face_ = pickedFace.get()->data()->index;
         //for (const auto& scan_idx : old_scans) {
             //tryRemoveObject("room_" + std::to_string(scan_idx));
         //}
@@ -285,17 +306,27 @@ SmartStream::computeNewSets(std::vector<int>& new_scans,
 }
 
 void SmartStream::update(const std::vector<int>& new_rooms, const std::vector<int>& old_rooms) {
-    for (const auto& idx : old_rooms) {
-        tryRemoveObject("room_" + std::to_string(idx));
-    }
+    //for (const auto& idx : old_rooms) {
+        //tryRemoveObject("room_" + std::to_string(idx));
+    //}
     std::lock_guard<std::mutex> lg(request_queue_mutex_);
     for (const auto& idx : new_rooms) {
-        request_queue_.push_back(idx);
+        bool has_object = false;
+        try {
+            object("room_"+std::to_string(idx));
+            has_object = true;
+        } catch (...) {
+        }
+        if (!has_object) {
+            request_queue_.push_back(idx);
+        }
         //client_->request_room(idx, this);
     }
 }
 
 void SmartStream::preRender() {
+
+
     //if (current_thread_.valid()) {
         client_->render_poll();
         if (!client_->idle()) gui()->status()->set("Streaming...");
@@ -337,6 +368,17 @@ void SmartStream::preRender() {
     tr.block<3,1>(0, 3) = pos;
     auto crosshair = object("crosshair");
     crosshair->set_transformation(tr);
+
+    if (tracking_) {
+        if (pickedFace.get()->data()->index == crt_face_) return;
+
+        std::vector<int> new_scans, old_scans;
+        computeNewSets(new_scans, old_scans, *pickedFace);
+        update(new_scans, old_scans);
+
+        crt_face_ = pickedFace.get()->data()->index;
+    }
+
 }
 
 SmartStream::Factory::Factory() : FW::Factory() {

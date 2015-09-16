@@ -55,9 +55,12 @@ class SmartStream : public FW::Visualizer {
         mutable_pointcloud::ptr_t mcloud_;
         //std::shared_ptr<std::thread> stream_thread_;
         std::set<int> current_scans_;
+        int crt_face_;
 
         std::deque<int> request_queue_;
         std::mutex request_queue_mutex_;
+
+        bool tracking_;
 
         //harmont::renderable::ptr_t renderable_;
         //std::shared_ptr<harmont::renderable::map_t> display_map_;
