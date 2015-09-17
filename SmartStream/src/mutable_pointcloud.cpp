@@ -72,13 +72,20 @@ void mutable_pointcloud::render_poll() {
 void mutable_pointcloud::process_data() {
     while (true) {
         if (!data_mutex_.try_lock()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
             continue;
         }
 
-        if (finished_) return;
+        bool force = false;
+        if (finished_) {
+            if (!data_queue_.empty()) {
+                force = true;
+            } else {
+                return;
+            }
+        }
 
-        if (data_queue_.size() > 100) {
+        if (force || data_queue_.size() > 100) {
             while (!data_queue_.empty()) {
                 cloud_normal_t::ConstPtr cloud = data_queue_.front();
                 data_queue_.pop_front();
@@ -95,7 +102,7 @@ void mutable_pointcloud::process_data() {
             }
         } else {
             data_mutex_.unlock();
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
             continue;
         }
         data_mutex_.unlock();

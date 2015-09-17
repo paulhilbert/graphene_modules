@@ -11,6 +11,8 @@
 #include <roomarr/RoomArrangement.hpp>
 typedef RoomArr::RoomArrangement::Arr Arr;
 
+#include "types.hpp"
+
 class vis_client : public pcl_compress::smart_client {
 public:
     typedef std::shared_ptr<vis_client> ptr_t;
@@ -31,9 +33,11 @@ public:
 
     pcl_compress::merged_global_data_t& global_data();
 
+    FW::mutable_pointcloud::renderable_t::ptr_t renderable(uint32_t patch_index) const;
+
     const pcl_compress::merged_global_data_t& global_data() const;
 
-    void request_room(int room_idx, FW::SmartStream* vis);
+    void request(const FW::request_t& req, FW::SmartStream* vis);
 
     //void init_cloud(harmont::renderable::ptr_t& cloud, FW::SmartStream* vis) {
         //if (cloud || !patch_count_) return;
@@ -80,7 +84,6 @@ protected:
     uint32_t patch_count_;
     pcl_compress::merged_global_data_t global_data_;
     RoomArr::RoomArrangement::UPtr arrangement_;
-    std::vector<Arr::Face_handle> face_map_;
     FW::mutable_pointcloud::ptr_t current_room_;
     bool finished_room_;
     std::future<void> current_thread_;
@@ -90,6 +93,8 @@ protected:
     //vertex_data_t vertex_data_;
     //bbox3f_t bbox_;
     bool idle_;
+    uint32_t room_idx_;
+    std::map<uint32_t, FW::mutable_pointcloud::renderable_t::ptr_t> renderables_;
 };
 
 #endif /* _SmartClient_VIS_CLIENT_HPP_ */

@@ -9,8 +9,8 @@ vis_client::vis_client(std::string host, short port, uint32_t min_patch_count)
       min_patch_count_(min_patch_count),
       last_patch_count_(0),
       patch_count_(0),
-      idle_(true) /*,
-      update_cloud_(false)*/ {}
+      idle_(true),
+      room_idx_(0) {}
 
 vis_client::~vis_client() {
 }
@@ -31,29 +31,15 @@ const merged_global_data_t& vis_client::global_data() const {
     return global_data_;
 }
 
-void vis_client::request_room(int room_idx, FW::SmartStream* vis) {
-    bool already_has_object = false;
-    try {
-        auto dummy = vis->object("room_" + std::to_string(room_idx));
-        already_has_object = true;
-    } catch (...) {}
-    if (already_has_object) return;
+FW::mutable_pointcloud::renderable_t::ptr_t vis_client::renderable(uint32_t patch_index) const {
+    auto find_it = renderables_.find(patch_index);
+    if (find_it == renderables_.end()) return nullptr;
+    return find_it->second;
+}
 
-    idle_ = false;
-    // determine patches
-    Arr::Face_handle f = face_map_[room_idx];
-
-    //std::set<uint32_t> wall_patches;
-    //auto curCirc = f->outer_ccb();
-    //auto endCirc = curCirc;
-    //do {
-        //wall_patches.insert(curCirc->data()->patchIndices.begin(), curCirc->data()->patchIndices.end());
-
-        //++curCirc;
-    //} while (curCirc != endCirc);
-    //std::vector<uint32_t> patch_indices(wall_patches.begin(), wall_patches.end());
-
-    std::vector<uint32_t> patch_indices(f->data()->patchIndices.begin(), f->data()->patchIndices.end());
+void vis_client::request(const FW::request_t& req, FW::SmartStream* vis) {
+    std::vector<uint32_t> patch_indices = req.second;
+    if (patch_indices.empty()) return;
 
     requested_patch_count_ = patch_indices.size();
 
@@ -62,16 +48,21 @@ void vis_client::request_room(int room_idx, FW::SmartStream* vis) {
     for (const auto& patch_idx : patch_indices) {
         point_count += global_data_.point_counts[patch_idx];
     }
+    if (!point_count) return;
     std::cout << "requesting " << point_count << " points in " << patch_indices.size() << " patches" << "\n";
 
     // init mutable pointcloud
     finished_room_ = false;
     auto current_room = std::make_shared<FW::mutable_pointcloud>();
     auto cloud = current_room->init(point_count);
-    vis->addObject("room_" + std::to_string(room_idx), cloud);
+    for (const auto& idx : patch_indices) {
+        renderables_[idx] = cloud;
+    }
+    vis->addObject("room_" + std::to_string(room_idx_++), cloud);
     current_room_ = current_room;
 
     //receive_patch_scan_data(patch_indices, global_data_);
+    idle_ = false;
     current_thread_ = std::async(std::launch::async, [this, patch_indices] () {
         receive_patch_scan_data(patch_indices, global_data_);
     });
@@ -86,7 +77,6 @@ void vis_client::render_poll() {
         if (finished_room_) {
             current_room_->finish();
             current_room_.reset();
-            std::cout << "finished room" << "\n";
             idle_ = true;
         }
     }
@@ -103,17 +93,6 @@ void vis_client::on_global_data_ready(const merged_global_data_t& g_data, std::i
     // load arrangement data
     arrangement_ = std::make_unique<RoomArr::RoomArrangement>();
     arrangement_->importArrangement(arr_data);
-    uint32_t face_count = 0;
-    for (auto fIt = arrangement_->getArrangement().faces_begin();
-         fIt != arrangement_->getArrangement().faces_end(); ++fIt) {
-        if (fIt->data()->index >= 0) ++face_count;
-    }
-    face_map_.resize(face_count);
-    for (auto fIt = arrangement_->getArrangement().faces_begin();
-         fIt != arrangement_->getArrangement().faces_end(); ++fIt) {
-        int index = fIt->data()->index;
-        if (index >= 0) face_map_[index] = fIt;
-    }
 }
 
 // asio thread

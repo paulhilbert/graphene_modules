@@ -12,9 +12,10 @@
 
 #include "mutable_pointcloud.hpp"
 
+#include "types.hpp"
 #include "vis_client.hpp"
 
-class vis_client;
+//class vis_client;
 
 namespace FW {
 
@@ -37,13 +38,18 @@ class SmartStream : public FW::Visualizer {
 
         void renderArrangement();
 
-        void computeNewSets(std::vector<int>& new_scans, std::vector<int>& old_scans,
-                            const Arr::Face_handle& current_face);
-
-        void update(const std::vector<int>& new_rooms, const std::vector<int>& old_rooms);
+        void update(Arr::Face_handle pickedFace);
 
         void preRender();
 
+    protected:
+        std::set<uint32_t> getPatches(int face_idx);
+        std::set<uint32_t> getWallPatches(int face_idx);
+
+        void computeNewSets(std::vector<request_t>& priority_sets,
+                            std::vector<request_t>& new_sets,
+                            std::vector<int>& removable,
+                            const Arr::Face_handle& current_face);
 
     protected:
         //std::vector<fs::path>  cloud_paths_;
@@ -57,10 +63,11 @@ class SmartStream : public FW::Visualizer {
         std::set<int> current_scans_;
         int crt_face_;
 
-        std::deque<int> request_queue_;
+        std::deque<request_t> request_queue_;
         std::mutex request_queue_mutex_;
 
         bool tracking_;
+        std::set<int> covered_faces_;
 
         //harmont::renderable::ptr_t renderable_;
         //std::shared_ptr<harmont::renderable::map_t> display_map_;

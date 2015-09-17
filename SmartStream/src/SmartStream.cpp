@@ -8,12 +8,7 @@ using namespace GUI::Property;
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
-
-//#define USE_CEREAL
-//#include <pcl_compress_client/client.hpp>
-//using namespace pcl_compress;
-
-//#include <boost/bind.hpp>
+#include <set_algo.hpp>
 
 typedef pcl::PointNormal point_t;
 typedef pcl::PointCloud<point_t> cloud_t;
@@ -28,8 +23,6 @@ SmartStream::SmartStream(std::string id, const std::string& host, const std::str
 }
 
 SmartStream::~SmartStream() {
-    //if (current_thread_.valid()) current_thread_.wait();
-    //client_->close();
 }
 
 void SmartStream::init() {
@@ -49,50 +42,6 @@ void SmartStream::init() {
 }
 
 void SmartStream::addProperties() {
-    // file select
-    //auto file_tree = gui()->properties()->add<Tree>("Available Files", "scan_files");
-    //for (const auto& entry : file_list_) {
-        //file_tree->add(std::to_string(entry.index), {entry.name}, false);
-        //current_file_selection_[entry.index] = false;
-    //}
-    //current_file_selection_changed_ = false;
-    //file_tree->setCallback([&] (std::string id_str, bool selected) {
-        //uint32_t idx;
-        //std::stringstream sstr; sstr << id_str; sstr >> idx;
-        //bool old_value = current_file_selection_[idx];
-        //current_file_selection_[idx] = selected;
-        //if (selected != old_value) {
-            //gui()->properties()->get<Button>({"get_files"})->enable();
-        //}
-        //std::cout << "switched " << idx << " to " << std::boolalpha << selected << "\n";
-    //});
-
-    //auto get_files = gui()->properties()->add<Button>("Get Files", "get_files");
-    //get_files->disable();
-    //get_files->setCallback([&] () {
-        //auto self = gui()->properties()->get<Button>({"get_files"});
-        //auto list = gui()->properties()->get<Tree>({"scan_files"});
-        //std::cout << "getting files" << "\n";
-        //stream_thread_ = std::make_shared<std::thread>([this] () {
-            //for (const auto& v : current_file_selection_) {
-                //if (!v.second) continue;
-                //global_data_t gdata;
-                //client_->receive_global_scan_data(v.first, gdata);
-                //std::vector<uint32_t> all_patches(gdata.num_patches);
-                //std::iota(all_patches.begin(), all_patches.end(), 0);
-                //client_->receive_patch_scan_data(v.first, all_patches, gdata);
-            //}
-
-            //auto button = gui()->properties()->get<Button>({"get_files"});
-            //auto files = gui()->properties()->get<Tree>({"scan_files"});
-            //files->enable();
-            //button->enable();
-        //});
-        //self->disable();
-        //list->disable();
-        ////stream_thread_->join();
-    //});
-
     auto track_btn = gui()->properties()->add<ToggleButton>("Track Camera", "track");
     track_btn->setValue(false);
     track_btn->setCallback([&] (bool state) { tracking_ = state; });
@@ -118,6 +67,24 @@ void SmartStream::addProperties() {
 }
 
 void SmartStream::registerEvents() {
+    fw()->events()->connect<void (int, int)>("LEFT_CLICK", [&] (int x, int y) {
+        Eigen::Vector3f dir = -fw()->camera()->forward();
+        if (1.f - fabs(dir[2]) < 0.01f) dir = fw()->camera()->up();
+        auto he = client_->arrangement().getClosestHalfedgeForRay(fw()->camera()->position(), dir);
+        if (he) {
+            std::cout << (*he)->face()->data()->index << " , " << (*he)->twin()->face()->data()->index << "\n";
+        }
+        if (he && (*he)->face()->data()->index >= 0 && (*he)->twin()->face()->data()->index >= 0) {
+            auto spline = client_->arrangement().getSplineForHalfedge(*he);
+            std::cout << "found edge" << "\n";
+            auto patches = spline->patches();
+            uint32_t query_index = *std::min_element(patches.begin(), patches.end());
+            auto cloud = client_->renderable(query_index);
+            if (cloud) {
+                cloud->set_point_colors(Eigen::Vector4f(1.f, 1.f, 1.f, 0.03f));
+            }
+        }
+    });
     fw()->events()->connect<void (int, int, int, int)>("LEFT_DRAG", [&] (int dx, int dy, int, int) {
         bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
 
@@ -131,84 +98,6 @@ void SmartStream::registerEvents() {
             }
         }
     });
-
-    fw()->events()->connect<void(int, int)>("LEFT_CLICK", [&](int x, int y) {
-//      if (!client_->idle()) return;
-        Eigen::Vector3f pointerPos = fw()->camera()->position();//Eigen::Vector3f::Zero();
-        //Eigen::Vector3f pickRayOrigin = Eigen::Vector3f::Zero();
-        //Eigen::Vector3f pickRayDirection = Eigen::Vector3f::Zero();
-
-        //std::tie(pickRayOrigin, pickRayDirection) =
-            //fw()->camera()->pick_ray(x, y);
-        //float pickRayLambda = -pickRayOrigin[2] / pickRayDirection[2];
-        //pointerPos = pickRayOrigin + pickRayLambda * pickRayDirection;
-
-        //for (auto faceLines : lines_) {
-            //faceLines->set_active(false);
-        //}
-
-        auto pickedFace = client_->arrangement().getFaceAtPoint(pointerPos.head(2));
-        if (!pickedFace || pickedFace.get()->data()->index < 0) {
-            std::cout << "No inside face picked." << std::endl;
-            return;
-        }
-
-        if (pickedFace.get()->data()->index == crt_face_) return;
-
-
-        //std::set<int> set_new({pickedFace.get()->data()->index}), set_old;
-        //update(set_new, set_old);
-
-        std::vector<int> new_scans, old_scans;
-        computeNewSets(new_scans, old_scans, *pickedFace);
-        update(new_scans, old_scans);
-        crt_face_ = pickedFace.get()->data()->index;
-        //for (const auto& scan_idx : old_scans) {
-            //tryRemoveObject("room_" + std::to_string(scan_idx));
-        //}
-        //for (const auto& scan_idx : new_scans) {
-            //cloud_t::Ptr crt_cloud(new cloud_t());
-
-            //Arr::Face_handle f = face_map_[scan_idx];
-            //for (const auto& patch_idx : f->data()->patchIndices) {
-                //point_t point;
-                //// compute center
-                //point.getVector3fMap() = gdata_.origins[patch_idx];
-
-                //// compute normal
-                //point.getNormalVector3fMap() =
-                    //gdata_.bases[patch_idx].col(2).normalized();
-                //crt_cloud->push_back(point);
-            //}
-
-            //auto scan = std::make_shared<
-                //harmont::pointcloud_object<cloud_t, boost::shared_ptr>>(crt_cloud);
-            //scan->init();
-            //scan->set_point_colors(Colors::Generation::randomHueRGBA());
-            //addObject("room_" + std::to_string(scan_idx), scan);
-        //}
-        //for (const auto& f : new_scans) {
-            //lines_[f]->set_active(true);
-        //}
-
-        // std::cout << "Face picked" << std::endl;
-        // int faceIndex = pickedFace.get()->data()->index;
-        // std::cout << faceIndex << std::endl;
-
-        // if (faceIndex >= 0) {
-        // lines_[faceIndex]->set_active(true);
-
-        // std::cout << "Num patch indices: " <<
-        // pickedFace.get()->data()->patchIndices.size() << std::endl;
-
-        // auto oneRingFaces = arrangement_->getOneRingFaces(pickedFace.get());
-        // std::cout << "Num one ring faces: " << oneRingFaces.size() <<
-        // std::endl;
-        // for (auto f : oneRingFaces) {
-        // lines_[f->data()->index]->set_active(true);
-        //}
-        //}
-    });
 }
 
 void SmartStream::renderArrangement() {
@@ -217,7 +106,7 @@ void SmartStream::renderArrangement() {
     RoomArr::RoomArrangement& arrangement = client_->arrangement();
 
     for (auto fIt = arrangement.getArrangement().faces_begin();
-         fIt != arrangement.getArrangement().faces_end(); ++fIt) {
+        fIt != arrangement.getArrangement().faces_end(); ++fIt) {
         if (fIt->is_unbounded()) continue;
 
         if (!fIt->data()->patchIndices.size()) {
@@ -259,102 +148,48 @@ void SmartStream::renderArrangement() {
     //}
 }
 
-void
-SmartStream::computeNewSets(std::vector<int>& new_scans,
-                               std::vector<int>& old_scans,
-                               //std::set<int>& query_patches,
-                               const Arr::Face_handle& current_face) {
-    std::set<int> new_scans_, old_scans_;
-    int current_index = current_face->data()->index;
-    if (current_index >= 0) {
-        std::set<int> current_scans;
-        current_scans.insert(current_index);
-        auto ring = client_->arrangement().getOneRingFaces(current_face);
-        std::cout << "Num one ring faces: " << ring.size() << std::endl;
-        for (auto f : ring) {
-            current_scans.insert(f->data()->index);
-        }
-
-        std::set_difference(current_scans.begin(), current_scans.end(),
-                            current_scans_.begin(), current_scans_.end(),
-                            std::inserter(new_scans_, new_scans_.end()));
-        std::set_difference(current_scans_.begin(), current_scans_.end(),
-                            current_scans.begin(), current_scans.end(),
-                            std::inserter(old_scans_, old_scans_.end()));
-
-        new_scans.clear();
-        old_scans.clear();
-        if (new_scans_.find(current_index) != new_scans_.end()) {
-            new_scans.push_back(current_index);
-        }
-        for (int idx : new_scans_) {
-            if (idx != current_index) new_scans.push_back(idx);
-        }
-        for (int idx : old_scans_) {
-            old_scans.push_back(idx);
-        }
-
-        //query_patches.clear();
-        //for (const auto& idx : new_scans) {
-            //Arr::Face_handle f = face_map_[idx];
-            //query_patches.insert(f->data()->patchIndices.begin(),
-                                 //f->data()->patchIndices.end());
-        //}
-
-        current_scans_ = current_scans;
-    }
-}
-
-void SmartStream::update(const std::vector<int>& new_rooms, const std::vector<int>& old_rooms) {
+void SmartStream::update(Arr::Face_handle pickedFace) {
+    std::vector<request_t> priority_sets;
+    std::vector<request_t> new_sets;
+    std::vector<int> removable;
+    computeNewSets(priority_sets, new_sets, removable, pickedFace);
     //for (const auto& idx : old_rooms) {
         //tryRemoveObject("room_" + std::to_string(idx));
     //}
     std::lock_guard<std::mutex> lg(request_queue_mutex_);
-    for (const auto& idx : new_rooms) {
-        bool has_object = false;
-        try {
-            object("room_"+std::to_string(idx));
-            has_object = true;
-        } catch (...) {
-        }
-        if (!has_object) {
-            request_queue_.push_back(idx);
-        }
-        //client_->request_room(idx, this);
-    }
+    //std::cout << "adding " << new_sets.size() << " sets" << "\n";
+    request_queue_.insert(request_queue_.begin(), priority_sets.begin(), priority_sets.end());
+    request_queue_.insert(request_queue_.end(), new_sets.begin(), new_sets.end());
+    //for (const auto& idx : new_rooms) {
+        //bool has_object = false;
+        //try {
+            //object("room_"+std::to_string(idx));
+            //has_object = true;
+        //} catch (...) {
+        //}
+        //if (!has_object) {
+            //request_queue_.push_back(idx);
+        //}
+        ////client_->request_room(idx, this);
+    //}
 }
 
 void SmartStream::preRender() {
-
-
-    //if (current_thread_.valid()) {
-        client_->render_poll();
-        if (!client_->idle()) gui()->status()->set("Streaming...");
-        else gui()->status()->set("Idle.");
-        {
-            std::lock_guard<std::mutex> lg(request_queue_mutex_);
-            if (client_->idle() && !request_queue_.empty()) {
-                int next_idx = request_queue_.front();
-                request_queue_.pop_front();
-                client_->request_room(next_idx, this);
-            }
+    client_->render_poll();
+    if (!client_->idle()) gui()->status()->set("Streaming...");
+    else gui()->status()->set("Idle.");
+    {
+        request_queue_mutex_.lock();
+        if (client_->idle() && !request_queue_.empty()) {
+            request_t req = request_queue_.front();
+            request_queue_.pop_front();
+            request_queue_mutex_.unlock();
+            client_->request(req, this);
+        } else {
+            request_queue_mutex_.unlock();
         }
+    }
         //std::future_status status = current_thread_.wait_for(std::chrono::milliseconds(1));
-        //if (status == std::future_status::ready) {
-            //if (current_thread_.valid()) current_thread_.get();
-        //}
-    //}
-    //if (!renderable_) client_->init_cloud(renderable_, this);
-    //if (renderable_) {
-        //if (!display_map_) {
-            //typedef harmont::renderable::map_t map_t;
-            //display_map_ = std::make_shared<map_t>(renderable_->eigen_map_display_buffer());
-            //shadow_map_ = std::make_shared<map_t>(renderable_->eigen_map_shadow_buffer());
-            //*display_map_ = renderable_->eigen_map_display_buffer();
-            //*shadow_map_ = renderable_->eigen_map_shadow_buffer();
-        //}
-        //client_->update_cloud(renderable_, this);
-    //}
 
     // crosshair positioning
     vec3f_t pos = fw()->camera()->position();
@@ -372,13 +207,209 @@ void SmartStream::preRender() {
     if (tracking_) {
         if (pickedFace.get()->data()->index == crt_face_) return;
 
-        std::vector<int> new_scans, old_scans;
-        computeNewSets(new_scans, old_scans, *pickedFace);
-        update(new_scans, old_scans);
+        update(pickedFace.get());
 
         crt_face_ = pickedFace.get()->data()->index;
     }
 
+}
+
+std::set<uint32_t>
+SmartStream::getPatches(int face_idx) {
+    auto f = client_->arrangement().face(face_idx);
+    std::set<uint32_t> patches(f->data()->patchIndices.begin(), f->data()->patchIndices.end());
+    return patches;
+}
+
+std::set<uint32_t>
+SmartStream::getWallPatches(int face_idx) {
+    std::set<uint32_t> wall_patches;
+
+    auto curCirc = client_->arrangement().face(face_idx)->outer_ccb();
+    auto endCirc = curCirc;
+    do {
+        wall_patches.insert(curCirc->data()->patchIndices.begin(), curCirc->data()->patchIndices.end());
+
+        ++curCirc;
+    } while (curCirc != endCirc);
+
+    return wall_patches;
+}
+
+void
+SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
+                            std::vector<request_t>& new_sets,
+                            std::vector<int>& removable,
+                            const Arr::Face_handle& current_face) {
+    int current_index = current_face->data()->index;
+    if (current_index < 0) return;
+
+    // compute face 1- and 2-ring
+    std::set<int> face_ring_1, face_ring_2;
+    auto ring1 = client_->arrangement().getOneRingFaces(current_face);
+    for (auto f1 : ring1) {
+        face_ring_1.insert(f1->data()->index);
+        auto ring2 = client_->arrangement().getOneRingFaces(f1);
+        for (const auto& f2 : ring2) {
+            face_ring_2.insert(f2->data()->index);
+        }
+    }
+    face_ring_2 = subtract(face_ring_2, face_ring_1);
+    face_ring_2.erase(current_index);
+
+    face_ring_1 = subtract(face_ring_1, covered_faces_);
+    face_ring_2 = subtract(face_ring_2, covered_faces_);
+
+    // get wall splines and patches for current face, ring 1 and ring 2
+    std::set<std::shared_ptr<RoomArr::RoomArrangement::Spline>> splines_0, splines_1, splines_2;
+    std::set<uint32_t> walls_0, walls_1, walls_2;
+    if (covered_faces_.find(current_index) == covered_faces_.end()) {
+        // we also have to include the current room
+        auto splines = client_->arrangement().getSplinesForFace(current_index);
+        splines_0.insert(splines.begin(), splines.end());
+        for (const auto& spline : splines) {
+            std::vector<uint32_t> patches = spline->patches();
+            walls_0.insert(patches.begin(), patches.end());
+        }
+    }
+
+    for (const auto& face_idx : face_ring_1) {
+        auto splines = client_->arrangement().getSplinesForFace(face_idx);
+        splines_1.insert(splines.begin(), splines.end());
+        for (const auto& spline : splines) {
+            std::vector<uint32_t> patches = spline->patches();
+            walls_1.insert(patches.begin(), patches.end());
+        }
+    }
+
+    for (const auto& face_idx : face_ring_2) {
+        auto splines = client_->arrangement().getSplinesForFace(face_idx);
+        splines_2.insert(splines.begin(), splines.end());
+        for (const auto& spline : splines) {
+            std::vector<uint32_t> patches = spline->patches();
+            walls_2.insert(patches.begin(), patches.end());
+        }
+    }
+
+    splines_1 = subtract(splines_1, splines_0);
+    splines_2 = subtract(splines_2, splines_1);
+
+    // get misc patches for current face, ring 1 and ring 2
+    std::set<uint32_t> misc_0, misc_1, misc_2;
+    if (covered_faces_.find(current_index) == covered_faces_.end()) {
+        // we also have to include the current room
+        std::set<uint32_t> all_patches = getPatches(current_index);
+        misc_0 = subtract(all_patches, walls_0);
+    }
+    for (const auto& face_idx : face_ring_1) {
+        std::set<uint32_t> all_patches = getPatches(face_idx);
+        std::set<uint32_t> patches = subtract(all_patches, walls_1);
+        misc_1.insert(patches.begin(), patches.end());
+    }
+    for (const auto& face_idx : face_ring_2) {
+        std::set<uint32_t> all_patches = getPatches(face_idx);
+        std::set<uint32_t> patches = subtract(all_patches, walls_2);
+        misc_2.insert(patches.begin(), patches.end());
+    }
+
+    // update covered_faces_
+    covered_faces_.insert(current_index);
+    covered_faces_.insert(face_ring_1.begin(), face_ring_1.end());
+    covered_faces_.insert(face_ring_2.begin(), face_ring_2.end());
+
+    // build query sets
+    new_sets.clear();
+    priority_sets.clear();
+    merged_global_data_t& gdata = client_->global_data();
+
+    for (const auto& spline : splines_0) {
+        priority_sets.push_back({set_type_t::walls, spline->patches()});
+    }
+
+    std::vector<uint32_t> floors, rest;
+    for (uint32_t idx : misc_0) {
+        vec3f_t n = gdata.bases[idx].col(2).normalized();
+        if (1.f - fabs(n[2]) < 0.01f) {
+            floors.push_back(idx);
+        } else {
+            rest.push_back(idx);
+        }
+    }
+    priority_sets.push_back({set_type_t::interior, floors});
+    priority_sets.push_back({set_type_t::interior, rest});
+
+    for (const auto& spline : splines_1) {
+        new_sets.push_back({set_type_t::walls, spline->patches()});
+    }
+    for (const auto& spline : splines_2) {
+        new_sets.push_back({set_type_t::walls, spline->patches()});
+    }
+
+    floors.clear();
+    rest.clear();
+    for (uint32_t idx : misc_1) {
+        vec3f_t n = gdata.bases[idx].col(2).normalized();
+        if (1.f - fabs(n[2]) < 0.01f) {
+            floors.push_back(idx);
+        } else {
+            rest.push_back(idx);
+        }
+    }
+    new_sets.push_back({set_type_t::interior, floors});
+    new_sets.push_back({set_type_t::interior, rest});
+
+    floors.clear();
+    rest.clear();
+    for (uint32_t idx : misc_2) {
+        vec3f_t n = gdata.bases[idx].col(2).normalized();
+        if (1.f - fabs(n[2]) < 0.01f) {
+            floors.push_back(idx);
+        } else {
+            rest.push_back(idx);
+        }
+    }
+    new_sets.push_back({set_type_t::interior, floors});
+    new_sets.push_back({set_type_t::interior, rest});
+
+    //std::set<int> new_scans_, removable_;
+    //int current_index = current_face->data()->index;
+    //if (current_index >= 0) {
+        //std::set<int> current_scans;
+        //current_scans.insert(current_index);
+        //auto ring = client_->arrangement().getOneRingFaces(current_face);
+        //std::cout << "Num one ring faces: " << ring.size() << std::endl;
+        //for (auto f : ring) {
+            //current_scans.insert(f->data()->index);
+        //}
+
+        //std::set_difference(current_scans.begin(), current_scans.end(),
+                            //current_scans_.begin(), current_scans_.end(),
+                            //std::inserter(new_scans_, new_scans_.end()));
+        //std::set_difference(current_scans_.begin(), current_scans_.end(),
+                            //current_scans.begin(), current_scans.end(),
+                            //std::inserter(removable_, removable_.end()));
+
+        //new_scans.clear();
+        //removable.clear();
+        //if (new_scans_.find(current_index) != new_scans_.end()) {
+            //new_scans.push_back(current_index);
+        //}
+        //for (int idx : new_scans_) {
+            //if (idx != current_index) new_scans.push_back(idx);
+        //}
+        //for (int idx : removable) {
+            //removable.push_back(idx);
+        //}
+
+        ////query_patches.clear();
+        ////for (const auto& idx : new_scans) {
+            ////Arr::Face_handle f = face_map_[idx];
+            ////query_patches.insert(f->data()->patchIndices.begin(),
+                                 ////f->data()->patchIndices.end());
+        ////}
+
+        //current_scans_ = current_scans;
+    //}
 }
 
 SmartStream::Factory::Factory() : FW::Factory() {
