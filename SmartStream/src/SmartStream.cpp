@@ -18,6 +18,18 @@ using namespace pcl_compress;
 
 namespace FW {
 
+template <typename T>
+size_t hash_set(const std::set<T>& values) {
+    auto it = values.begin();
+    std::hash<T> hasher;
+    size_t hash = hasher(*it);
+    ++it;
+    for(; it != values.end(); ++it) {
+        hash ^= hasher(*it) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+    }
+    return hash;
+}
+
 
 SmartStream::SmartStream(std::string id, const std::string& host, const std::string& port) : Visualizer(id), host_(host), port_(port), crt_face_(-1), tracking_(false) {
 }
@@ -257,50 +269,48 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
     face_ring_2 = subtract(face_ring_2, face_ring_1);
     face_ring_2.erase(current_index);
 
-    face_ring_1 = subtract(face_ring_1, covered_faces_);
-    face_ring_2 = subtract(face_ring_2, covered_faces_);
-
     // get wall splines and patches for current face, ring 1 and ring 2
     std::set<std::shared_ptr<RoomArr::RoomArrangement::Spline>> splines_0, splines_1, splines_2;
+    std::map<uint32_t, uint32_t> spline_indices_1, spline_indices_2;
     std::set<uint32_t> walls_0, walls_1, walls_2;
-    if (covered_faces_.find(current_index) == covered_faces_.end()) {
-        // we also have to include the current room
-        auto splines = client_->arrangement().getSplinesForFace(current_index);
-        splines_0.insert(splines.begin(), splines.end());
-        for (const auto& spline : splines) {
-            std::vector<uint32_t> patches = spline->patches();
-            walls_0.insert(patches.begin(), patches.end());
-        }
+    // we also have to include the current room
+    auto splines = client_->arrangement().getSplinesForFace(current_index);
+    splines_0.insert(splines.begin(), splines.end());
+    for (const auto& spline : splines) {
+        std::vector<uint32_t> patches = spline->patches();
+        walls_0.insert(patches.begin(), patches.end());
     }
 
     for (const auto& face_idx : face_ring_1) {
         auto splines = client_->arrangement().getSplinesForFace(face_idx);
         splines_1.insert(splines.begin(), splines.end());
         for (const auto& spline : splines) {
+            spline_indices_1[spline->index()] = face_idx;
             std::vector<uint32_t> patches = spline->patches();
             walls_1.insert(patches.begin(), patches.end());
         }
     }
+    size_t hash_1 = hash_set(face_ring_1);
 
     for (const auto& face_idx : face_ring_2) {
         auto splines = client_->arrangement().getSplinesForFace(face_idx);
         splines_2.insert(splines.begin(), splines.end());
         for (const auto& spline : splines) {
+            spline_indices_2[spline->index()] = face_idx;
             std::vector<uint32_t> patches = spline->patches();
             walls_2.insert(patches.begin(), patches.end());
         }
     }
+    size_t hash_2 = hash_set(face_ring_2);
 
     splines_1 = subtract(splines_1, splines_0);
     splines_2 = subtract(splines_2, splines_1);
 
     // get misc patches for current face, ring 1 and ring 2
     std::set<uint32_t> misc_0, misc_1, misc_2;
-    if (covered_faces_.find(current_index) == covered_faces_.end()) {
-        // we also have to include the current room
-        std::set<uint32_t> all_patches = getPatches(current_index);
-        misc_0 = subtract(all_patches, walls_0);
-    }
+    // we also have to include the current room
+    std::set<uint32_t> all_patches = getPatches(current_index);
+    misc_0 = subtract(all_patches, walls_0);
     for (const auto& face_idx : face_ring_1) {
         std::set<uint32_t> all_patches = getPatches(face_idx);
         std::set<uint32_t> patches = subtract(all_patches, walls_1);
@@ -312,18 +322,13 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
         misc_2.insert(patches.begin(), patches.end());
     }
 
-    // update covered_faces_
-    covered_faces_.insert(current_index);
-    covered_faces_.insert(face_ring_1.begin(), face_ring_1.end());
-    covered_faces_.insert(face_ring_2.begin(), face_ring_2.end());
-
     // build query sets
     new_sets.clear();
     priority_sets.clear();
     merged_global_data_t& gdata = client_->global_data();
 
     for (const auto& spline : splines_0) {
-        priority_sets.push_back({set_type_t::walls, spline->patches()});
+        priority_sets.push_back(request_t(false, current_index, set_type_t::walls, spline->patches()));
     }
 
     std::vector<uint32_t> floors, rest;
@@ -335,14 +340,14 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
             rest.push_back(idx);
         }
     }
-    priority_sets.push_back({set_type_t::interior, floors});
-    priority_sets.push_back({set_type_t::interior, rest});
+    priority_sets.push_back(request_t(false, current_index, set_type_t::interior, floors));
+    priority_sets.push_back(request_t(false, current_index, set_type_t::interior, rest));
 
     for (const auto& spline : splines_1) {
-        new_sets.push_back({set_type_t::walls, spline->patches()});
+        new_sets.push_back(request_t(false, spline_indices_1[spline->index()], set_type_t::walls, spline->patches()));
     }
     for (const auto& spline : splines_2) {
-        new_sets.push_back({set_type_t::walls, spline->patches()});
+        new_sets.push_back(request_t(false, spline_indices_2[spline->index()], set_type_t::walls, spline->patches()));
     }
 
     floors.clear();
@@ -355,8 +360,8 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
             rest.push_back(idx);
         }
     }
-    new_sets.push_back({set_type_t::interior, floors});
-    new_sets.push_back({set_type_t::interior, rest});
+    new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_1), set_type_t::interior, floors));
+    new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_1), set_type_t::interior, rest));
 
     floors.clear();
     rest.clear();
@@ -368,8 +373,8 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
             rest.push_back(idx);
         }
     }
-    new_sets.push_back({set_type_t::interior, floors});
-    new_sets.push_back({set_type_t::interior, rest});
+    new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_2), set_type_t::interior, floors));
+    new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_2), set_type_t::interior, rest));
 
     //std::set<int> new_scans_, removable_;
     //int current_index = current_face->data()->index;

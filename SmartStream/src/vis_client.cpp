@@ -38,7 +38,16 @@ FW::mutable_pointcloud::renderable_t::ptr_t vis_client::renderable(uint32_t patc
 }
 
 void vis_client::request(const FW::request_t& req, FW::SmartStream* vis) {
-    std::vector<uint32_t> patch_indices = req.second;
+    if (std::get<0>(req)) {
+        if (requested_sets_hash_.find(std::get<1>(req)) != requested_sets_hash_.end()) {
+            return;
+        }
+    } else {
+        if (requested_sets_.find(std::get<1>(req)) != requested_sets_.end()) {
+            return;
+        }
+    }
+    std::vector<uint32_t> patch_indices = std::get<3>(req);
     if (patch_indices.empty()) return;
 
     requested_patch_count_ = patch_indices.size();
@@ -63,6 +72,11 @@ void vis_client::request(const FW::request_t& req, FW::SmartStream* vis) {
 
     //receive_patch_scan_data(patch_indices, global_data_);
     idle_ = false;
+    if (std::get<0>(req)) {
+        requested_sets_hash_.insert(std::get<1>(req));
+    } else {
+        requested_sets_.insert(std::get<1>(req));
+    }
     current_thread_ = std::async(std::launch::async, [this, patch_indices] () {
         receive_patch_scan_data(patch_indices, global_data_);
     });

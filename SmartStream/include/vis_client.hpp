@@ -88,6 +88,8 @@ protected:
     bool finished_room_;
     std::future<void> current_thread_;
     uint32_t requested_patch_count_;
+    std::set<uint32_t> requested_sets_;
+    std::set<uint32_t> requested_sets_hash_;
     //std::mutex data_mutex_;
     //std::mutex cloud_mutex_;
     //vertex_data_t vertex_data_;
