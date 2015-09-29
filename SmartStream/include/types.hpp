@@ -7,7 +7,7 @@ namespace FW {
 
 typedef enum class set_type_ : int { walls, interior } set_type_t;
 //typedef std::pair<set_type_t, std::vector<uint32_t>> request_t;
-typedef std::tuple<bool, uint32_t, set_type_t, std::vector<uint32_t>> request_t;
+typedef std::tuple<Eigen::Vector4f, uint32_t, set_type_t, std::vector<uint32_t>> request_t;
 
 } // FW
 

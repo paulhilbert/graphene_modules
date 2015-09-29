@@ -30,6 +30,12 @@ size_t hash_set(const std::set<T>& values) {
     return hash;
 }
 
+template <typename T>
+size_t hash_vector(const std::vector<T>& values) {
+    std::set<T> set_version(values.begin(), values.end());
+    return hash_set<T>(set_version);
+}
+
 
 SmartStream::SmartStream(std::string id, const std::string& host, const std::string& port) : Visualizer(id), host_(host), port_(port), crt_face_(-1), tracking_(false) {
 }
@@ -64,18 +70,23 @@ void SmartStream::addProperties() {
 
     showGroup->setCallback([&] (std::string option, bool state) {
         if (option == "showClip") {
-            auto objs = objects();
-            for (auto& obj : objs) {
-                const char test[] = "room";
-                if (obj.first.length() >= 4 && strncmp(obj.first.c_str(), test, 4) == 0) {
-                    obj.second->set_clipping(state);
-                }
-            }
+            auto grp = client_->renderable_group();
+            if (grp) grp->set_clipping(state);
+            //auto objs = objects();
+            //for (auto& obj : objs) {
+                //const char test[] = "room";
+                //if (obj.first.length() >= 4 && strncmp(obj.first.c_str(), test, 4) == 0) {
+                    //obj.second->set_clipping(state);
+                //}
+            //}
         }
     });
 
     auto  transformGroup = gui()->modes()->addGroup("TransformGroup");
     transformGroup->addOption("Clip", "Modify Clipping Plane", std::string(ICON_PREFIX) + "clipplane.png");
+
+    auto omitMisc = gui()->properties()->add<Bool>("Omit Misc", "omit");
+    omitMisc->setValue(false);
 }
 
 void SmartStream::registerEvents() {
@@ -101,13 +112,15 @@ void SmartStream::registerEvents() {
         bool clipping = gui()->modes()->group("TransformGroup")->option("Clip")->active();
 
         if (clipping) {
-            auto objs = objects();
-            for (auto& obj : objs) {
-                const char test[] = "room";
-                if (obj.first.length() >= 4 && strncmp(obj.first.c_str(), test, 4) == 0) {
-                    obj.second->delta_clipping_height(-dy * 0.01f);
-                }
-            }
+            auto grp = client_->renderable_group();
+            if (grp) grp->delta_clipping_height(-dy * 0.01f);
+            //auto objs = objects();
+            //for (auto& obj : objs) {
+                //const char test[] = "room";
+                //if (obj.first.length() >= 4 && strncmp(obj.first.c_str(), test, 4) == 0) {
+                    //obj.second->delta_clipping_height(-dy * 0.01f);
+                //}
+            //}
         }
     });
 }
@@ -170,8 +183,10 @@ void SmartStream::update(Arr::Face_handle pickedFace) {
     //}
     std::lock_guard<std::mutex> lg(request_queue_mutex_);
     //std::cout << "adding " << new_sets.size() << " sets" << "\n";
+
     request_queue_.insert(request_queue_.begin(), priority_sets.begin(), priority_sets.end());
     request_queue_.insert(request_queue_.end(), new_sets.begin(), new_sets.end());
+
     //for (const auto& idx : new_rooms) {
         //bool has_object = false;
         //try {
@@ -256,6 +271,15 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
     int current_index = current_face->data()->index;
     if (current_index < 0) return;
 
+    //Eigen::Vector4f col_spline0(1.f, 0.f, 1.f, 1.f);
+    //Eigen::Vector4f col_misc0(1.f, 0.f, 0.f, 1.f);
+    //Eigen::Vector4f col_spline1(0.f, 0.f, 1.f, 1.f);
+    //Eigen::Vector4f col_misc1(0.f, 1.f, 1.f, 1.f);
+    Eigen::Vector4f col_spline0(1.f, 1.f, 1.f, 1.f);
+    Eigen::Vector4f col_misc0(1.f, 1.f, 1.f, 1.f);
+    Eigen::Vector4f col_spline1(1.f, 1.f, 1.f, 1.f);
+    Eigen::Vector4f col_misc1(1.f, 1.f, 1.f, 1.f);
+
     // compute face 1- and 2-ring
     std::set<int> face_ring_1, face_ring_2;
     auto ring1 = client_->arrangement().getOneRingFaces(current_face);
@@ -290,7 +314,7 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
             walls_1.insert(patches.begin(), patches.end());
         }
     }
-    size_t hash_1 = hash_set(face_ring_1);
+    //size_t hash_1 = hash_set(face_ring_1);
 
     for (const auto& face_idx : face_ring_2) {
         auto splines = client_->arrangement().getSplinesForFace(face_idx);
@@ -301,7 +325,7 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
             walls_2.insert(patches.begin(), patches.end());
         }
     }
-    size_t hash_2 = hash_set(face_ring_2);
+    //size_t hash_2 = hash_set(face_ring_2);
 
     splines_1 = subtract(splines_1, splines_0);
     splines_2 = subtract(splines_2, splines_1);
@@ -327,11 +351,17 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
     priority_sets.clear();
     merged_global_data_t& gdata = client_->global_data();
 
+    uint32_t count_0 = 0;
+
     for (const auto& spline : splines_0) {
-        priority_sets.push_back(request_t(false, current_index, set_type_t::walls, spline->patches()));
+        if (!spline->patches().size()) continue;
+        auto crt_hash = hash_vector(spline->patches());
+        count_0 += spline->patches().size();
+        priority_sets.push_back(request_t(col_spline0, crt_hash, set_type_t::walls, spline->patches()));
     }
 
     std::vector<uint32_t> floors, rest;
+    bool omitMisc = gui()->properties()->get<Bool>({"omit"})->value();
     for (uint32_t idx : misc_0) {
         vec3f_t n = gdata.bases[idx].col(2).normalized();
         if (1.f - fabs(n[2]) < 0.01f) {
@@ -340,15 +370,27 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
             rest.push_back(idx);
         }
     }
-    priority_sets.push_back(request_t(false, current_index, set_type_t::interior, floors));
-    priority_sets.push_back(request_t(false, current_index, set_type_t::interior, rest));
+    count_0 += floors.size();
+    count_0 += rest.size();
+    if (floors.size()) {
+        priority_sets.push_back(request_t(col_misc0, hash_vector(floors), set_type_t::interior, floors));
+    }
+    if (!omitMisc && rest.size()) {
+        priority_sets.push_back(request_t(col_misc0, hash_vector(rest), set_type_t::interior, rest));
+    }
 
+    uint32_t count_1 = 0;
     for (const auto& spline : splines_1) {
-        new_sets.push_back(request_t(false, spline_indices_1[spline->index()], set_type_t::walls, spline->patches()));
+        if (!spline->patches().size()) continue;
+        auto crt_hash = hash_vector(spline->patches());
+        count_1 += spline->patches().size();
+        new_sets.push_back(request_t(col_spline1, crt_hash, set_type_t::walls, spline->patches()));
     }
-    for (const auto& spline : splines_2) {
-        new_sets.push_back(request_t(false, spline_indices_2[spline->index()], set_type_t::walls, spline->patches()));
-    }
+    //for (const auto& spline : splines_2) {
+        //if (!spline->patches().size()) continue;
+        //auto crt_hash = hash_vector(spline->patches());
+        //new_sets.push_back(request_t(true, crt_hash, set_type_t::walls, spline->patches()));
+    //}
 
     floors.clear();
     rest.clear();
@@ -360,21 +402,30 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
             rest.push_back(idx);
         }
     }
-    new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_1), set_type_t::interior, floors));
-    new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_1), set_type_t::interior, rest));
-
-    floors.clear();
-    rest.clear();
-    for (uint32_t idx : misc_2) {
-        vec3f_t n = gdata.bases[idx].col(2).normalized();
-        if (1.f - fabs(n[2]) < 0.01f) {
-            floors.push_back(idx);
-        } else {
-            rest.push_back(idx);
-        }
+    count_1 += floors.size();
+    count_1 += rest.size();
+    if (floors.size()) {
+        new_sets.push_back(request_t(col_misc1, hash_vector(floors), set_type_t::interior, floors));
     }
-    new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_2), set_type_t::interior, floors));
-    new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_2), set_type_t::interior, rest));
+    if (!omitMisc && rest.size()) {
+        new_sets.push_back(request_t(col_misc1, hash_vector(rest), set_type_t::interior, rest));
+    }
+
+    std::cout << count_0 << "\n";
+    std::cout << count_1 << "\n";
+
+    //floors.clear();
+    //rest.clear();
+    //for (uint32_t idx : misc_2) {
+        //vec3f_t n = gdata.bases[idx].col(2).normalized();
+        //if (1.f - fabs(n[2]) < 0.01f) {
+            //floors.push_back(idx);
+        //} else {
+            //rest.push_back(idx);
+        //}
+    //}
+    //new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_2), set_type_t::interior, floors));
+    //new_sets.push_back(request_t(true, static_cast<uint32_t>(hash_2), set_type_t::interior, rest));
 
     //std::set<int> new_scans_, removable_;
     //int current_index = current_face->data()->index;
@@ -424,6 +475,7 @@ SmartStream::Factory::~Factory() {
 }
 
 void SmartStream::Factory::init() {
+    //gui()->properties()->add<String>("Host", "host")->setValue("oglaroon.cc");
     gui()->properties()->add<String>("Host", "host")->setValue("localhost");
     gui()->properties()->add<String>("Port", "port")->setValue("9003");
 }

@@ -37,7 +37,7 @@ class mutable_pointcloud {
 
         virtual ~mutable_pointcloud();
 
-        mutable_pointcloud::renderable_t::ptr_t init(uint32_t num_points);
+        mutable_pointcloud::renderable_t::ptr_t init(uint32_t num_points, const Eigen::Vector4f& color = Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
 
         void finish();
 

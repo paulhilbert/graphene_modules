@@ -37,15 +37,13 @@ FW::mutable_pointcloud::renderable_t::ptr_t vis_client::renderable(uint32_t patc
     return find_it->second;
 }
 
+harmont::renderable_group::ptr_t vis_client::renderable_group() const {
+    return renderable_group_;
+}
+
 void vis_client::request(const FW::request_t& req, FW::SmartStream* vis) {
-    if (std::get<0>(req)) {
-        if (requested_sets_hash_.find(std::get<1>(req)) != requested_sets_hash_.end()) {
-            return;
-        }
-    } else {
-        if (requested_sets_.find(std::get<1>(req)) != requested_sets_.end()) {
-            return;
-        }
+    if (requested_sets_hash_.find(std::get<1>(req)) != requested_sets_hash_.end()) {
+        return;
     }
     std::vector<uint32_t> patch_indices = std::get<3>(req);
     if (patch_indices.empty()) return;
@@ -63,20 +61,18 @@ void vis_client::request(const FW::request_t& req, FW::SmartStream* vis) {
     // init mutable pointcloud
     finished_room_ = false;
     auto current_room = std::make_shared<FW::mutable_pointcloud>();
-    auto cloud = current_room->init(point_count);
+    auto cloud = current_room->init(point_count, std::get<0>(req));
     for (const auto& idx : patch_indices) {
         renderables_[idx] = cloud;
     }
     vis->addObject("room_" + std::to_string(room_idx_++), cloud);
+    if (!renderable_group_) renderable_group_ = std::make_shared<harmont::renderable_group>(std::vector<harmont::renderable::ptr_t>());
+    renderable_group_->add_object(cloud);
     current_room_ = current_room;
 
     //receive_patch_scan_data(patch_indices, global_data_);
     idle_ = false;
-    if (std::get<0>(req)) {
-        requested_sets_hash_.insert(std::get<1>(req));
-    } else {
-        requested_sets_.insert(std::get<1>(req));
-    }
+    requested_sets_hash_.insert(std::get<1>(req));
     current_thread_ = std::async(std::launch::async, [this, patch_indices] () {
         receive_patch_scan_data(patch_indices, global_data_);
     });

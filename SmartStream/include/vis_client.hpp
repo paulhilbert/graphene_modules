@@ -35,6 +35,8 @@ public:
 
     FW::mutable_pointcloud::renderable_t::ptr_t renderable(uint32_t patch_index) const;
 
+    harmont::renderable_group::ptr_t renderable_group() const;
+
     const pcl_compress::merged_global_data_t& global_data() const;
 
     void request(const FW::request_t& req, FW::SmartStream* vis);
@@ -97,6 +99,7 @@ protected:
     bool idle_;
     uint32_t room_idx_;
     std::map<uint32_t, FW::mutable_pointcloud::renderable_t::ptr_t> renderables_;
+    harmont::renderable_group::ptr_t renderable_group_;
 };
 
 #endif /* _SmartClient_VIS_CLIENT_HPP_ */

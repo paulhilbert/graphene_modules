@@ -8,10 +8,10 @@ mutable_pointcloud::mutable_pointcloud() : last_point_idx_(0), range_start_(0), 
 mutable_pointcloud::~mutable_pointcloud() {
 }
 
-mutable_pointcloud::renderable_t::ptr_t mutable_pointcloud::init(uint32_t num_points) {
+mutable_pointcloud::renderable_t::ptr_t mutable_pointcloud::init(uint32_t num_points, const Eigen::Vector4f& color) {
     std::lock_guard<std::mutex> g(cloud_mutex_);
     vertex_data_ = harmont::renderable::vertex_data_t::Zero(num_points, 9);
-    float rgba = harmont::renderable::color_to_rgba(Eigen::Vector4f::Ones());
+    float rgba = harmont::renderable::color_to_rgba(color);
     vertex_data_.col(3) = Eigen::VectorXf::Constant(num_points, rgba);
     cloud_ = std::make_shared<harmont::pointcloud_object<cloud_normal_t, boost::shared_ptr>>(num_points);
     cloud_->init();
@@ -96,7 +96,7 @@ void mutable_pointcloud::process_data() {
                     vertex_data_.block(last_point_idx_, 0, 1, 3) = pos.transpose();
                     vertex_data_.block(last_point_idx_, 4, 1, 3) = nrm.transpose();
                     vertex_data_.block(last_point_idx_, 7, 1, 2) = Eigen::RowVector2f::Zero();
-                    vertex_data_(last_point_idx_, 3) = harmont::renderable::color_to_rgba(Eigen::Vector4f::Ones());
+                    //vertex_data_(last_point_idx_, 3) = harmont::renderable::color_to_rgba(Eigen::Vector4f::Ones());
                     ++last_point_idx_;
                 }
             }
