@@ -1,0 +1,15 @@
+# ninja log v5
+0	5741	0	CMakeFiles/Registration.dir/src/visRegistration.cpp.o	9f188a5759ad67f3
+1	23363	0	CMakeFiles/Registration.dir/src/Registration.cpp.o	602cfd9c2f3dd311
+0	234	0	build.ninja	6947f27a955b66dd
+0	462	0	libRegistration.so	74cff75e2b91642d
+1	30	0	CMakeFiles/install.util	88bb3aa5d34e7a3
+1	23328	0	CMakeFiles/Registration.dir/src/Registration.cpp.o	602cfd9c2f3dd311
+23328	23824	0	libRegistration.so	74cff75e2b91642d
+1	25	0	CMakeFiles/install.util	88bb3aa5d34e7a3
+1	23475	0	CMakeFiles/Registration.dir/src/Registration.cpp.o	602cfd9c2f3dd311
+23475	23946	0	libRegistration.so	74cff75e2b91642d
+0	12	0	CMakeFiles/install.util	88bb3aa5d34e7a3
+1	23619	0	CMakeFiles/Registration.dir/src/Registration.cpp.o	602cfd9c2f3dd311
+23619	24089	0	libRegistration.so	74cff75e2b91642d
+1	13	0	CMakeFiles/install.util	88bb3aa5d34e7a3

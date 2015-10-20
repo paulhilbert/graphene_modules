@@ -1,0 +1,636 @@
+The target system is: Windows -  - 
+The host system is: Linux - 3.17.6-1-ARCH - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/x86_64-w64-mingw32-gcc 
+Build flags: -O2;-g;-pipe;-Wall;-Wp,-D_FORTIFY_SOURCE=2;-fexceptions;--param=ssp-buffer-size=4
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.exe"
+
+The C compiler identification is GNU, found in "/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/3.0.2/CompilerIdC/a.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/x86_64-w64-mingw32-g++ 
+Build flags: -O2;-g;-pipe;-Wall;-Wp,-D_FORTIFY_SOURCE=2;-fexceptions;--param=ssp-buffer-size=4
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.exe"
+
+The CXX compiler identification is GNU, found in "/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/3.0.2/CompilerIdCXX/a.exe"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec755266204/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec755266204.dir/build.make CMakeFiles/cmTryCompileExec755266204.dir/build
+make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec755266204.dir/testCCompiler.c.obj
+/usr/bin/x86_64-w64-mingw32-gcc   -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec755266204.dir/testCCompiler.c.obj   -c /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTryCompileExec755266204.exe
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec755266204.dir/link.txt --verbose=1
+/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec755266204.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec755266204.dir/objects.a @CMakeFiles/cmTryCompileExec755266204.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-gcc  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4      -Wl,--whole-archive CMakeFiles/cmTryCompileExec755266204.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec755266204.exe -Wl,--out-implib,libcmTryCompileExec755266204.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+make[1]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec3989297641/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3989297641.dir/build.make CMakeFiles/cmTryCompileExec3989297641.dir/build
+make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3989297641.dir/CMakeCCompilerABI.c.obj
+/usr/bin/x86_64-w64-mingw32-gcc   -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec3989297641.dir/CMakeCCompilerABI.c.obj   -c /usr/share/cmake-3.0/Modules/CMakeCCompilerABI.c
+Linking C executable cmTryCompileExec3989297641.exe
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3989297641.dir/link.txt --verbose=1
+/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec3989297641.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec3989297641.dir/objects.a @CMakeFiles/cmTryCompileExec3989297641.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-gcc  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4    -v -Wl,--whole-archive CMakeFiles/cmTryCompileExec3989297641.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3989297641.exe -Wl,--out-implib,libcmTryCompileExec3989297641.dll.a -Wl,--major-image-version,0,--minor-image-version,0   
+Using built-in specs.
+COLLECT_GCC=/usr/bin/x86_64-w64-mingw32-gcc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper
+Target: x86_64-w64-mingw32
+Configured with: /build/mingw-w64-gcc/src/gcc-4.9.2/configure --prefix=/usr --libexecdir=/usr/lib --target=x86_64-w64-mingw32 --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada --enable-shared --enable-static --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes --with-system-zlib --enable-cloog-backend=isl --enable-lto --disable-dw2-exceptions --enable-libgomp --disable-multilib --enable-checking=release --disable-libssp
+Thread model: posix
+gcc version 4.9.2 (GCC) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/
+COLLECT_GCC_OPTIONS='-O2' '-g' '-pipe' '-Wall' '-fexceptions' '--param' 'ssp-buffer-size=4' '-v' '-o' 'cmTryCompileExec3989297641.exe' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2 -plugin /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/cczhfYAp.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep -Bdynamic -o cmTryCompileExec3989297641.exe /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2 -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib --whole-archive CMakeFiles/cmTryCompileExec3989297641.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec3989297641.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o
+make[1]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(x86_64-w64-mingw32-ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTryCompileExec3989297641/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTryCompileExec3989297641.dir/build.make CMakeFiles/cmTryCompileExec3989297641.dir/build]
+  ignore line: [make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1]
+  ignore line: [Building C object CMakeFiles/cmTryCompileExec3989297641.dir/CMakeCCompilerABI.c.obj]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-gcc   -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec3989297641.dir/CMakeCCompilerABI.c.obj   -c /usr/share/cmake-3.0/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTryCompileExec3989297641.exe]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3989297641.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec3989297641.dir/objects.a]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec3989297641.dir/objects.a @CMakeFiles/cmTryCompileExec3989297641.dir/objects1.rsp]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-gcc  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4    -v -Wl,--whole-archive CMakeFiles/cmTryCompileExec3989297641.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3989297641.exe -Wl,--out-implib,libcmTryCompileExec3989297641.dll.a -Wl,--major-image-version,0,--minor-image-version,0   ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/x86_64-w64-mingw32-gcc]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper]
+  ignore line: [Target: x86_64-w64-mingw32]
+  ignore line: [Configured with: /build/mingw-w64-gcc/src/gcc-4.9.2/configure --prefix=/usr --libexecdir=/usr/lib --target=x86_64-w64-mingw32 --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada --enable-shared --enable-static --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes --with-system-zlib --enable-cloog-backend=isl --enable-lto --disable-dw2-exceptions --enable-libgomp --disable-multilib --enable-checking=release --disable-libssp]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 4.9.2 (GCC) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-O2' '-g' '-pipe' '-Wall' '-fexceptions' '--param' 'ssp-buffer-size=4' '-v' '-o' 'cmTryCompileExec3989297641.exe' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2 -plugin /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/cczhfYAp.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep -Bdynamic -o cmTryCompileExec3989297641.exe /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2 -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib --whole-archive CMakeFiles/cmTryCompileExec3989297641.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec3989297641.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o]
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/cczhfYAp.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_eh] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+    arg [-plugin-opt=-pass-through=-ladvapi32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lshell32] ==> ignore
+    arg [-plugin-opt=-pass-through=-luser32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_eh] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-m] ==> ignore
+    arg [i386pep] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec3989297641.exe] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2]
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib]
+    arg [--whole-archive] ==> ignore
+    arg [CMakeFiles/cmTryCompileExec3989297641.dir/objects.a] ==> ignore
+    arg [--no-whole-archive] ==> ignore
+    arg [--out-implib] ==> ignore
+    arg [libcmTryCompileExec3989297641.dll.a] ==> ignore
+    arg [--major-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [--minor-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lgcc_eh] ==> lib [gcc_eh]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [-lpthread] ==> lib [pthread]
+    arg [-ladvapi32] ==> lib [advapi32]
+    arg [-lshell32] ==> lib [shell32]
+    arg [-luser32] ==> lib [user32]
+    arg [-lkernel32] ==> lib [kernel32]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lgcc_eh] ==> lib [gcc_eh]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc_eh]
+  remove lib [gcc]
+  remove lib [gcc_eh]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2] ==> [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> [/usr/x86_64-w64-mingw32/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> [/usr/x86_64-w64-mingw32/lib]
+  implicit libs: [mingw32;moldname;mingwex;msvcrt;pthread;advapi32;shell32;user32;kernel32;mingw32;moldname;mingwex;msvcrt]
+  implicit dirs: [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2;/usr/x86_64-w64-mingw32/lib]
+  implicit fwks: []
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec1300207009/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1300207009.dir/build.make CMakeFiles/cmTryCompileExec1300207009.dir/build
+make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1300207009.dir/testCXXCompiler.cxx.obj
+/usr/bin/x86_64-w64-mingw32-g++    -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec1300207009.dir/testCXXCompiler.cxx.obj -c /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTryCompileExec1300207009.exe
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1300207009.dir/link.txt --verbose=1
+/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec1300207009.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec1300207009.dir/objects.a @CMakeFiles/cmTryCompileExec1300207009.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-g++  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4      -Wl,--whole-archive CMakeFiles/cmTryCompileExec1300207009.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec1300207009.exe -Wl,--out-implib,libcmTryCompileExec1300207009.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+make[1]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec4255925467/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec4255925467.dir/build.make CMakeFiles/cmTryCompileExec4255925467.dir/build
+make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec4255925467.dir/CMakeCXXCompilerABI.cpp.obj
+/usr/bin/x86_64-w64-mingw32-g++    -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec4255925467.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.0/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTryCompileExec4255925467.exe
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec4255925467.dir/link.txt --verbose=1
+/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec4255925467.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec4255925467.dir/objects.a @CMakeFiles/cmTryCompileExec4255925467.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-g++  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4    -v -Wl,--whole-archive CMakeFiles/cmTryCompileExec4255925467.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec4255925467.exe -Wl,--out-implib,libcmTryCompileExec4255925467.dll.a -Wl,--major-image-version,0,--minor-image-version,0   
+Using built-in specs.
+COLLECT_GCC=/usr/bin/x86_64-w64-mingw32-g++
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper
+Target: x86_64-w64-mingw32
+Configured with: /build/mingw-w64-gcc/src/gcc-4.9.2/configure --prefix=/usr --libexecdir=/usr/lib --target=x86_64-w64-mingw32 --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada --enable-shared --enable-static --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes --with-system-zlib --enable-cloog-backend=isl --enable-lto --disable-dw2-exceptions --enable-libgomp --disable-multilib --enable-checking=release --disable-libssp
+Thread model: posix
+gcc version 4.9.2 (GCC) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/
+COLLECT_GCC_OPTIONS='-O2' '-g' '-pipe' '-Wall' '-fexceptions' '--param' 'ssp-buffer-size=4' '-v' '-o' 'cmTryCompileExec4255925467.exe' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2 -plugin /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/ccOBDl7x.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep -Bdynamic -o cmTryCompileExec4255925467.exe /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2 -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib --whole-archive CMakeFiles/cmTryCompileExec4255925467.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec4255925467.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o
+make[1]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(x86_64-w64-mingw32-ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTryCompileExec4255925467/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTryCompileExec4255925467.dir/build.make CMakeFiles/cmTryCompileExec4255925467.dir/build]
+  ignore line: [make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1]
+  ignore line: [Building CXX object CMakeFiles/cmTryCompileExec4255925467.dir/CMakeCXXCompilerABI.cpp.obj]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-g++    -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec4255925467.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.0/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTryCompileExec4255925467.exe]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec4255925467.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec4255925467.dir/objects.a]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec4255925467.dir/objects.a @CMakeFiles/cmTryCompileExec4255925467.dir/objects1.rsp]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-g++  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4    -v -Wl,--whole-archive CMakeFiles/cmTryCompileExec4255925467.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec4255925467.exe -Wl,--out-implib,libcmTryCompileExec4255925467.dll.a -Wl,--major-image-version,0,--minor-image-version,0   ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/x86_64-w64-mingw32-g++]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper]
+  ignore line: [Target: x86_64-w64-mingw32]
+  ignore line: [Configured with: /build/mingw-w64-gcc/src/gcc-4.9.2/configure --prefix=/usr --libexecdir=/usr/lib --target=x86_64-w64-mingw32 --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada --enable-shared --enable-static --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes --with-system-zlib --enable-cloog-backend=isl --enable-lto --disable-dw2-exceptions --enable-libgomp --disable-multilib --enable-checking=release --disable-libssp]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 4.9.2 (GCC) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-O2' '-g' '-pipe' '-Wall' '-fexceptions' '--param' 'ssp-buffer-size=4' '-v' '-o' 'cmTryCompileExec4255925467.exe' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2 -plugin /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/ccOBDl7x.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep -Bdynamic -o cmTryCompileExec4255925467.exe /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2 -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib --whole-archive CMakeFiles/cmTryCompileExec4255925467.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec4255925467.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o]
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccOBDl7x.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+    arg [-plugin-opt=-pass-through=-ladvapi32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lshell32] ==> ignore
+    arg [-plugin-opt=-pass-through=-luser32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-m] ==> ignore
+    arg [i386pep] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec4255925467.exe] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2]
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib]
+    arg [--whole-archive] ==> ignore
+    arg [CMakeFiles/cmTryCompileExec4255925467.dir/objects.a] ==> ignore
+    arg [--no-whole-archive] ==> ignore
+    arg [--out-implib] ==> ignore
+    arg [libcmTryCompileExec4255925467.dll.a] ==> ignore
+    arg [--major-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [--minor-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [-lpthread] ==> lib [pthread]
+    arg [-ladvapi32] ==> lib [advapi32]
+    arg [-lshell32] ==> lib [shell32]
+    arg [-luser32] ==> lib [user32]
+    arg [-lkernel32] ==> lib [kernel32]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o] ==> ignore
+  remove lib [gcc_s]
+  remove lib [gcc]
+  remove lib [gcc_s]
+  remove lib [gcc]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2] ==> [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> [/usr/x86_64-w64-mingw32/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> [/usr/x86_64-w64-mingw32/lib]
+  implicit libs: [stdc++;mingw32;moldname;mingwex;msvcrt;pthread;advapi32;shell32;user32;kernel32;mingw32;moldname;mingwex;msvcrt]
+  implicit dirs: [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2;/usr/x86_64-w64-mingw32/lib]
+  implicit fwks: []
+
+
+The target system is: Windows -  - 
+The host system is: Linux - 3.18.6-1-ARCH - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/x86_64-w64-mingw32-gcc 
+Build flags: -O2;-g;-pipe;-Wall;-Wp,-D_FORTIFY_SOURCE=2;-fexceptions;--param=ssp-buffer-size=4;
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.exe"
+
+The C compiler identification is GNU, found in "/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/3.1.2/CompilerIdC/a.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/x86_64-w64-mingw32-g++ 
+Build flags: -O2;-g;-pipe;-Wall;-Wp,-D_FORTIFY_SOURCE=2;-fexceptions;--param=ssp-buffer-size=4;
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.exe"
+
+The CXX compiler identification is GNU, found in "/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/3.1.2/CompilerIdCXX/a.exe"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec3081484540/fast"
+make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3081484540.dir/build.make CMakeFiles/cmTryCompileExec3081484540.dir/build
+make[2]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3081484540.dir/testCCompiler.c.obj
+/usr/bin/x86_64-w64-mingw32-gcc   -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec3081484540.dir/testCCompiler.c.obj   -c /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTryCompileExec3081484540.exe
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3081484540.dir/link.txt --verbose=1
+/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec3081484540.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec3081484540.dir/objects.a @CMakeFiles/cmTryCompileExec3081484540.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-gcc  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -Wl,--whole-archive CMakeFiles/cmTryCompileExec3081484540.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3081484540.exe -Wl,--out-implib,libcmTryCompileExec3081484540.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles/cmTryCompileExec3081484540.dir/linklibs.rsp
+make[2]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+make[1]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec3696207473/fast"
+make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3696207473.dir/build.make CMakeFiles/cmTryCompileExec3696207473.dir/build
+make[2]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3696207473.dir/CMakeCCompilerABI.c.obj
+/usr/bin/x86_64-w64-mingw32-gcc   -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec3696207473.dir/CMakeCCompilerABI.c.obj   -c /usr/share/cmake-3.1/Modules/CMakeCCompilerABI.c
+Linking C executable cmTryCompileExec3696207473.exe
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3696207473.dir/link.txt --verbose=1
+/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec3696207473.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec3696207473.dir/objects.a @CMakeFiles/cmTryCompileExec3696207473.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-gcc  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4    -v -Wl,--whole-archive CMakeFiles/cmTryCompileExec3696207473.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3696207473.exe -Wl,--out-implib,libcmTryCompileExec3696207473.dll.a -Wl,--major-image-version,0,--minor-image-version,0   
+Using built-in specs.
+COLLECT_GCC=/usr/bin/x86_64-w64-mingw32-gcc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper
+Target: x86_64-w64-mingw32
+Configured with: /build/mingw-w64-gcc/src/gcc-4.9.2/configure --prefix=/usr --libexecdir=/usr/lib --target=x86_64-w64-mingw32 --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada --enable-shared --enable-static --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes --with-system-zlib --enable-cloog-backend=isl --enable-lto --disable-dw2-exceptions --enable-libgomp --disable-multilib --enable-checking=release --disable-libssp
+Thread model: posix
+gcc version 4.9.2 (GCC) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/
+COLLECT_GCC_OPTIONS='-O2' '-g' '-pipe' '-Wall' '-fexceptions' '--param' 'ssp-buffer-size=4' '-v' '-o' 'cmTryCompileExec3696207473.exe' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2 -plugin /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/ccfjxwsR.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep -Bdynamic -o cmTryCompileExec3696207473.exe /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2 -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib --whole-archive CMakeFiles/cmTryCompileExec3696207473.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec3696207473.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o
+make[2]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+make[1]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(x86_64-w64-mingw32-ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTryCompileExec3696207473/fast"]
+  ignore line: [make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTryCompileExec3696207473.dir/build.make CMakeFiles/cmTryCompileExec3696207473.dir/build]
+  ignore line: [make[2]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1]
+  ignore line: [Building C object CMakeFiles/cmTryCompileExec3696207473.dir/CMakeCCompilerABI.c.obj]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-gcc   -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec3696207473.dir/CMakeCCompilerABI.c.obj   -c /usr/share/cmake-3.1/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTryCompileExec3696207473.exe]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3696207473.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec3696207473.dir/objects.a]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec3696207473.dir/objects.a @CMakeFiles/cmTryCompileExec3696207473.dir/objects1.rsp]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-gcc  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4    -v -Wl,--whole-archive CMakeFiles/cmTryCompileExec3696207473.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3696207473.exe -Wl,--out-implib,libcmTryCompileExec3696207473.dll.a -Wl,--major-image-version,0,--minor-image-version,0   ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/x86_64-w64-mingw32-gcc]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper]
+  ignore line: [Target: x86_64-w64-mingw32]
+  ignore line: [Configured with: /build/mingw-w64-gcc/src/gcc-4.9.2/configure --prefix=/usr --libexecdir=/usr/lib --target=x86_64-w64-mingw32 --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada --enable-shared --enable-static --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes --with-system-zlib --enable-cloog-backend=isl --enable-lto --disable-dw2-exceptions --enable-libgomp --disable-multilib --enable-checking=release --disable-libssp]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 4.9.2 (GCC) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-O2' '-g' '-pipe' '-Wall' '-fexceptions' '--param' 'ssp-buffer-size=4' '-v' '-o' 'cmTryCompileExec3696207473.exe' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2 -plugin /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/ccfjxwsR.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_eh -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep -Bdynamic -o cmTryCompileExec3696207473.exe /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2 -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib --whole-archive CMakeFiles/cmTryCompileExec3696207473.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec3696207473.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o]
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccfjxwsR.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_eh] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+    arg [-plugin-opt=-pass-through=-ladvapi32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lshell32] ==> ignore
+    arg [-plugin-opt=-pass-through=-luser32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_eh] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-m] ==> ignore
+    arg [i386pep] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec3696207473.exe] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2]
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib]
+    arg [--whole-archive] ==> ignore
+    arg [CMakeFiles/cmTryCompileExec3696207473.dir/objects.a] ==> ignore
+    arg [--no-whole-archive] ==> ignore
+    arg [--out-implib] ==> ignore
+    arg [libcmTryCompileExec3696207473.dll.a] ==> ignore
+    arg [--major-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [--minor-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lgcc_eh] ==> lib [gcc_eh]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [-lpthread] ==> lib [pthread]
+    arg [-ladvapi32] ==> lib [advapi32]
+    arg [-lshell32] ==> lib [shell32]
+    arg [-luser32] ==> lib [user32]
+    arg [-lkernel32] ==> lib [kernel32]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lgcc_eh] ==> lib [gcc_eh]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc_eh]
+  remove lib [gcc]
+  remove lib [gcc_eh]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2] ==> [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> [/usr/x86_64-w64-mingw32/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> [/usr/x86_64-w64-mingw32/lib]
+  implicit libs: [mingw32;moldname;mingwex;msvcrt;pthread;advapi32;shell32;user32;kernel32;mingw32;moldname;mingwex;msvcrt]
+  implicit dirs: [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2;/usr/x86_64-w64-mingw32/lib]
+  implicit fwks: []
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec1644030053/fast"
+make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1644030053.dir/build.make CMakeFiles/cmTryCompileExec1644030053.dir/build
+make[2]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1644030053.dir/testCXXCompiler.cxx.obj
+/usr/bin/x86_64-w64-mingw32-g++    -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec1644030053.dir/testCXXCompiler.cxx.obj -c /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTryCompileExec1644030053.exe
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1644030053.dir/link.txt --verbose=1
+/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec1644030053.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec1644030053.dir/objects.a @CMakeFiles/cmTryCompileExec1644030053.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-g++  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -Wl,--whole-archive CMakeFiles/cmTryCompileExec1644030053.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec1644030053.exe -Wl,--out-implib,libcmTryCompileExec1644030053.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles/cmTryCompileExec1644030053.dir/linklibs.rsp
+make[2]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+make[1]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec4019035578/fast"
+make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTryCompileExec4019035578.dir/build.make CMakeFiles/cmTryCompileExec4019035578.dir/build
+make[2]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec4019035578.dir/CMakeCXXCompilerABI.cpp.obj
+/usr/bin/x86_64-w64-mingw32-g++    -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec4019035578.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.1/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTryCompileExec4019035578.exe
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec4019035578.dir/link.txt --verbose=1
+/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec4019035578.dir/objects.a
+/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec4019035578.dir/objects.a @CMakeFiles/cmTryCompileExec4019035578.dir/objects1.rsp
+/usr/bin/x86_64-w64-mingw32-g++  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4    -v -Wl,--whole-archive CMakeFiles/cmTryCompileExec4019035578.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec4019035578.exe -Wl,--out-implib,libcmTryCompileExec4019035578.dll.a -Wl,--major-image-version,0,--minor-image-version,0   
+Using built-in specs.
+COLLECT_GCC=/usr/bin/x86_64-w64-mingw32-g++
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper
+Target: x86_64-w64-mingw32
+Configured with: /build/mingw-w64-gcc/src/gcc-4.9.2/configure --prefix=/usr --libexecdir=/usr/lib --target=x86_64-w64-mingw32 --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada --enable-shared --enable-static --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes --with-system-zlib --enable-cloog-backend=isl --enable-lto --disable-dw2-exceptions --enable-libgomp --disable-multilib --enable-checking=release --disable-libssp
+Thread model: posix
+gcc version 4.9.2 (GCC) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/
+COLLECT_GCC_OPTIONS='-O2' '-g' '-pipe' '-Wall' '-fexceptions' '--param' 'ssp-buffer-size=4' '-v' '-o' 'cmTryCompileExec4019035578.exe' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2 -plugin /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/ccrJm41X.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep -Bdynamic -o cmTryCompileExec4019035578.exe /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2 -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib --whole-archive CMakeFiles/cmTryCompileExec4019035578.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec4019035578.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o
+make[2]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+make[1]: Leaving directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(x86_64-w64-mingw32-ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTryCompileExec4019035578/fast"]
+  ignore line: [make[1]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTryCompileExec4019035578.dir/build.make CMakeFiles/cmTryCompileExec4019035578.dir/build]
+  ignore line: [make[2]: Entering directory '/home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/cmake -E cmake_progress_report /home/slim/source/graphene_modules/Registration/build_mingw/CMakeFiles/CMakeTmp/CMakeFiles 1]
+  ignore line: [Building CXX object CMakeFiles/cmTryCompileExec4019035578.dir/CMakeCXXCompilerABI.cpp.obj]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-g++    -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4     -o CMakeFiles/cmTryCompileExec4019035578.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.1/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTryCompileExec4019035578.exe]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec4019035578.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cmake -E remove -f CMakeFiles/cmTryCompileExec4019035578.dir/objects.a]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-ar cr CMakeFiles/cmTryCompileExec4019035578.dir/objects.a @CMakeFiles/cmTryCompileExec4019035578.dir/objects1.rsp]
+  ignore line: [/usr/bin/x86_64-w64-mingw32-g++  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4    -v -Wl,--whole-archive CMakeFiles/cmTryCompileExec4019035578.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec4019035578.exe -Wl,--out-implib,libcmTryCompileExec4019035578.dll.a -Wl,--major-image-version,0,--minor-image-version,0   ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/x86_64-w64-mingw32-g++]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper]
+  ignore line: [Target: x86_64-w64-mingw32]
+  ignore line: [Configured with: /build/mingw-w64-gcc/src/gcc-4.9.2/configure --prefix=/usr --libexecdir=/usr/lib --target=x86_64-w64-mingw32 --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada --enable-shared --enable-static --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes --with-system-zlib --enable-cloog-backend=isl --enable-lto --disable-dw2-exceptions --enable-libgomp --disable-multilib --enable-checking=release --disable-libssp]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 4.9.2 (GCC) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/:/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-O2' '-g' '-pipe' '-Wall' '-fexceptions' '--param' 'ssp-buffer-size=4' '-v' '-o' 'cmTryCompileExec4019035578.exe' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2 -plugin /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/ccrJm41X.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep -Bdynamic -o cmTryCompileExec4019035578.exe /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2 -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib --whole-archive CMakeFiles/cmTryCompileExec4019035578.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec4019035578.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt /usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o]
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccrJm41X.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+    arg [-plugin-opt=-pass-through=-ladvapi32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lshell32] ==> ignore
+    arg [-plugin-opt=-pass-through=-luser32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-m] ==> ignore
+    arg [i386pep] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec4019035578.exe] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2]
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib]
+    arg [--whole-archive] ==> ignore
+    arg [CMakeFiles/cmTryCompileExec4019035578.dir/objects.a] ==> ignore
+    arg [--no-whole-archive] ==> ignore
+    arg [--out-implib] ==> ignore
+    arg [libcmTryCompileExec4019035578.dll.a] ==> ignore
+    arg [--major-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [--minor-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [-lpthread] ==> lib [pthread]
+    arg [-ladvapi32] ==> lib [advapi32]
+    arg [-lshell32] ==> lib [shell32]
+    arg [-luser32] ==> lib [user32]
+    arg [-lkernel32] ==> lib [kernel32]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o] ==> ignore
+  remove lib [gcc_s]
+  remove lib [gcc]
+  remove lib [gcc_s]
+  remove lib [gcc]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2] ==> [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> [/usr/x86_64-w64-mingw32/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> [/usr/x86_64-w64-mingw32/lib]
+  implicit libs: [stdc++;mingw32;moldname;mingwex;msvcrt;pthread;advapi32;shell32;user32;kernel32;mingw32;moldname;mingwex;msvcrt]
+  implicit dirs: [/usr/lib/gcc/x86_64-w64-mingw32/4.9.2;/usr/x86_64-w64-mingw32/lib]
+  implicit fwks: []
+
+

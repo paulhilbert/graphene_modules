@@ -1,0 +1,1 @@
+-I/home/slim/source/graphene_modules/Registration -I/home/slim/source/graphene_modules/Registration/build_mingw -I/home/slim/source/graphene_modules/Registration/include -I/usr/x86_64-w64-mingw32/include/eigen3 -I/usr/x86_64-w64-mingw32/include -I/usr/x86_64-w64-mingw32/include/graphene -I/usr/x86_64-w64-mingw32/include/pcl-1.8 
