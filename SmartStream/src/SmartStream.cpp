@@ -48,6 +48,11 @@ void SmartStream::init() {
     client_ = std::make_shared<vis_client>(host_, port);
     client_->receive_global_scan_data();
 
+    auto mesh = std::make_shared<harmont::triangles_object>(client_->mesh(), Eigen::Vector4f::Ones());
+    mesh->init();
+    addObject("mesh", mesh);
+    client_->renderable_group()->add_object(mesh);
+
 	addProperties();
 	registerEvents();
 
@@ -87,6 +92,10 @@ void SmartStream::addProperties() {
 
     auto omitMisc = gui()->properties()->add<Bool>("Omit Misc", "omit");
     omitMisc->setValue(false);
+
+    auto omitBase = gui()->properties()->add<Bool>("Omit Base", "omit_base");
+    omitBase->setValue(true);
+    omitBase->setCallback([&] (bool state) { object("mesh")->set_active(state); });
 }
 
 void SmartStream::registerEvents() {
@@ -353,11 +362,14 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
 
     uint32_t count_0 = 0;
 
-    for (const auto& spline : splines_0) {
-        if (!spline->patches().size()) continue;
-        auto crt_hash = hash_vector(spline->patches());
-        count_0 += spline->patches().size();
-        priority_sets.push_back(request_t(col_spline0, crt_hash, set_type_t::walls, spline->patches()));
+    bool omitBase = gui()->properties()->get<Bool>({"omit_base"})->value();
+    if (!omitBase) {
+        for (const auto& spline : splines_0) {
+            if (!spline->patches().size()) continue;
+            auto crt_hash = hash_vector(spline->patches());
+            count_0 += spline->patches().size();
+            priority_sets.push_back(request_t(col_spline0, crt_hash, set_type_t::walls, spline->patches()));
+        }
     }
 
     std::vector<uint32_t> floors, rest;
@@ -372,7 +384,7 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
     }
     count_0 += floors.size();
     count_0 += rest.size();
-    if (floors.size()) {
+    if (!omitBase && floors.size()) {
         priority_sets.push_back(request_t(col_misc0, hash_vector(floors), set_type_t::interior, floors));
     }
     if (!omitMisc && rest.size()) {
@@ -380,11 +392,13 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
     }
 
     uint32_t count_1 = 0;
-    for (const auto& spline : splines_1) {
-        if (!spline->patches().size()) continue;
-        auto crt_hash = hash_vector(spline->patches());
-        count_1 += spline->patches().size();
-        new_sets.push_back(request_t(col_spline1, crt_hash, set_type_t::walls, spline->patches()));
+    if (!omitBase) {
+        for (const auto& spline : splines_1) {
+            if (!spline->patches().size()) continue;
+            auto crt_hash = hash_vector(spline->patches());
+            count_1 += spline->patches().size();
+            new_sets.push_back(request_t(col_spline1, crt_hash, set_type_t::walls, spline->patches()));
+        }
     }
     //for (const auto& spline : splines_2) {
         //if (!spline->patches().size()) continue;
@@ -404,7 +418,7 @@ SmartStream::computeNewSets(std::vector<request_t>& priority_sets,
     }
     count_1 += floors.size();
     count_1 += rest.size();
-    if (floors.size()) {
+    if (!omitBase && floors.size()) {
         new_sets.push_back(request_t(col_misc1, hash_vector(floors), set_type_t::interior, floors));
     }
     if (!omitMisc && rest.size()) {

@@ -41,6 +41,8 @@ public:
 
     void request(const FW::request_t& req, FW::SmartStream* vis);
 
+    const std::vector<Eigen::Vector3f>& mesh() const;
+
     //void init_cloud(harmont::renderable::ptr_t& cloud, FW::SmartStream* vis) {
         //if (cloud || !patch_count_) return;
         //cloud = std::make_shared<harmont::pointcloud_object<cloud_normal_t, boost::shared_ptr>>(global_data_.num_points);
@@ -73,7 +75,7 @@ public:
 
 protected:
     // asio thread
-    void on_global_data_ready(const pcl_compress::merged_global_data_t& g_data, std::istream& arr_data);
+    void on_global_data_ready(const pcl_compress::merged_global_data_t& g_data, std::istream& arr_data, std::vector<Eigen::Vector3f>& mesh);
 
     // asio thread
     void on_patch_ready(uint32_t global_index, uint32_t request_index, pcl_compress::cloud_normal_t::Ptr patch);
@@ -100,6 +102,7 @@ protected:
     uint32_t room_idx_;
     std::map<uint32_t, FW::mutable_pointcloud::renderable_t::ptr_t> renderables_;
     harmont::renderable_group::ptr_t renderable_group_;
+    std::vector<Eigen::Vector3f> mesh_;
 };
 
 #endif /* _SmartClient_VIS_CLIENT_HPP_ */

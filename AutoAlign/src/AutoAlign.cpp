@@ -82,7 +82,7 @@ void AutoAlign::addProperties() {
 	auto  transformGroup = gui()->modes()->addGroup("TransformGroup");
 	transformGroup->addOption("Clip", "Modify Clipping Plane", std::string(ICON_PREFIX) + "clipplane.png");
 
-    gui()->properties()->add<Button>("Extract Wall Planes", "extract_planes")->setCallback([&] () { extractWallPlanes(); });
+    //gui()->properties()->add<Button>("Extract Wall Planes", "extract_planes")->setCallback([&] () { extractWallPlanes(); });
 }
 
 void AutoAlign::registerEvents() {
@@ -256,14 +256,14 @@ boost::optional<uint32_t> AutoAlign::selectObject(const Eigen::Vector3f& origin,
     //}
 //}
 
-void AutoAlign::extractWallPlanes() {
-    Eigen::Matrix4f t_z = m_objectGroup->transformation();
-    std::vector<duraark::plane_t> planes = duraark::ifc_wall_planes<Mesh>(t_z, m_ifcObjects);
-    std::vector<Eigen::Vector3f> lines = planesTo2DLines(planes);
-    harmont::lines_object::ptr_t lines_obj = std::make_shared<harmont::lines_object>(lines, Eigen::Vector4f(0.f, 0.f, 1.f, 1.f));
-    lines_obj->init();
-    addObject("ifc_lines", lines_obj);
-}
+//void AutoAlign::extractWallPlanes() {
+    //Eigen::Matrix4f t_z = m_objectGroup->transformation();
+    //std::vector<duraark::plane_t> planes = duraark::ifc_wall_planes<Mesh>(t_z, m_ifcObjects);
+    //std::vector<Eigen::Vector3f> lines = planesTo2DLines(planes);
+    //harmont::lines_object::ptr_t lines_obj = std::make_shared<harmont::lines_object>(lines, Eigen::Vector4f(0.f, 0.f, 1.f, 1.f));
+    //lines_obj->init();
+    //addObject("ifc_lines", lines_obj);
+//}
 
 std::vector<Eigen::Vector3f> AutoAlign::planesTo2DLines(const std::vector<duraark::plane_t>& planes) {
     auto bbox = m_objectGroup->bounding_box();

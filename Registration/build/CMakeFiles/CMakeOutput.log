@@ -28,17 +28,17 @@ The CXX compiler identification is GNU, found in "/home/slim/source/graphene_mod
 Determining if the C compiler works passed with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_39956"
-[1/2] Building C object CMakeFiles/cmTC_39956.dir/testCCompiler.c.o
-[2/2] Linking C executable cmTC_39956
+Run Build Command:"/usr/bin/ninja" "cmTC_34536"
+[1/2] Building C object CMakeFiles/cmTC_34536.dir/testCCompiler.c.o
+[2/2] Linking C executable cmTC_34536
 
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_92ea8"
-[1/2] Building C object CMakeFiles/cmTC_92ea8.dir/CMakeCCompilerABI.c.o
-[2/2] Linking C executable cmTC_92ea8
+Run Build Command:"/usr/bin/ninja" "cmTC_28782"
+[1/2] Building C object CMakeFiles/cmTC_28782.dir/CMakeCCompilerABI.c.o
+[2/2] Linking C executable cmTC_28782
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper
@@ -48,17 +48,17 @@ Thread model: posix
 gcc version 5.2.0 (GCC) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_92ea8' '-rdynamic' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2 -plugin /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccQ5rirC.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_92ea8 /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0 -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../.. CMakeFiles/cmTC_92ea8.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtend.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_28782' '-rdynamic' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2 -plugin /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccH3CvJT.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_28782 /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0 -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../.. CMakeFiles/cmTC_28782.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtend.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crtn.o
 
 
 Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/ninja" "cmTC_92ea8"]
-  ignore line: [[1/2] Building C object CMakeFiles/cmTC_92ea8.dir/CMakeCCompilerABI.c.o]
-  ignore line: [[2/2] Linking C executable cmTC_92ea8]
+  ignore line: [Run Build Command:"/usr/bin/ninja" "cmTC_28782"]
+  ignore line: [[1/2] Building C object CMakeFiles/cmTC_28782.dir/CMakeCCompilerABI.c.o]
+  ignore line: [[2/2] Linking C executable cmTC_28782]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper]
@@ -68,13 +68,13 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 5.2.0 (GCC) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_92ea8' '-rdynamic' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2 -plugin /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccQ5rirC.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_92ea8 /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0 -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../.. CMakeFiles/cmTC_92ea8.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtend.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_28782' '-rdynamic' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2 -plugin /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccH3CvJT.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_28782 /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0 -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../.. CMakeFiles/cmTC_28782.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtend.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crtn.o]
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccQ5rirC.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccH3CvJT.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -89,7 +89,7 @@ Parsed C implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_92ea8] ==> ignore
+    arg [cmTC_28782] ==> ignore
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o] ==> ignore
@@ -98,7 +98,7 @@ Parsed C implicit link information from above output:
     arg [-L/lib/../lib] ==> dir [/lib/../lib]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../..] ==> dir [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../..]
-    arg [CMakeFiles/cmTC_92ea8.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_28782.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -129,9 +129,9 @@ Parsed C implicit link information from above output:
 Detecting C [-std=c11] compiler features compiled with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_7352f"
-[1/2] Building C object CMakeFiles/cmTC_7352f.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_7352f
+Run Build Command:"/usr/bin/ninja" "cmTC_2c95c"
+[1/2] Building C object CMakeFiles/cmTC_2c95c.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_2c95c
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -143,9 +143,9 @@ Run Build Command:"/usr/bin/ninja" "cmTC_7352f"
 Detecting C [-std=c99] compiler features compiled with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_3ca07"
-[1/2] Building C object CMakeFiles/cmTC_3ca07.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_3ca07
+Run Build Command:"/usr/bin/ninja" "cmTC_d0b35"
+[1/2] Building C object CMakeFiles/cmTC_d0b35.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_d0b35
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -157,9 +157,9 @@ Run Build Command:"/usr/bin/ninja" "cmTC_3ca07"
 Detecting C [-std=c90] compiler features compiled with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_606cb"
-[1/2] Building C object CMakeFiles/cmTC_606cb.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_606cb
+Run Build Command:"/usr/bin/ninja" "cmTC_dce7b"
+[1/2] Building C object CMakeFiles/cmTC_dce7b.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_dce7b
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -169,17 +169,17 @@ Run Build Command:"/usr/bin/ninja" "cmTC_606cb"
 Determining if the CXX compiler works passed with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_554a2"
-[1/2] Building CXX object CMakeFiles/cmTC_554a2.dir/testCXXCompiler.cxx.o
-[2/2] Linking CXX executable cmTC_554a2
+Run Build Command:"/usr/bin/ninja" "cmTC_f40f2"
+[1/2] Building CXX object CMakeFiles/cmTC_f40f2.dir/testCXXCompiler.cxx.o
+[2/2] Linking CXX executable cmTC_f40f2
 
 
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_3bc7c"
-[1/2] Building CXX object CMakeFiles/cmTC_3bc7c.dir/CMakeCXXCompilerABI.cpp.o
-[2/2] Linking CXX executable cmTC_3bc7c
+Run Build Command:"/usr/bin/ninja" "cmTC_0b6aa"
+[1/2] Building CXX object CMakeFiles/cmTC_0b6aa.dir/CMakeCXXCompilerABI.cpp.o
+[2/2] Linking CXX executable cmTC_0b6aa
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper
@@ -189,17 +189,17 @@ Thread model: posix
 gcc version 5.2.0 (GCC) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3bc7c' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2 -plugin /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc9X2lrU.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_3bc7c /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0 -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../.. CMakeFiles/cmTC_3bc7c.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtend.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_0b6aa' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2 -plugin /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccbpIvvb.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_0b6aa /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0 -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../.. CMakeFiles/cmTC_0b6aa.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtend.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crtn.o
 
 
 Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/ninja" "cmTC_3bc7c"]
-  ignore line: [[1/2] Building CXX object CMakeFiles/cmTC_3bc7c.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [[2/2] Linking CXX executable cmTC_3bc7c]
+  ignore line: [Run Build Command:"/usr/bin/ninja" "cmTC_0b6aa"]
+  ignore line: [[1/2] Building CXX object CMakeFiles/cmTC_0b6aa.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [[2/2] Linking CXX executable cmTC_0b6aa]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper]
@@ -209,13 +209,13 @@ Parsed CXX implicit link information from above output:
   ignore line: [gcc version 5.2.0 (GCC) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_3bc7c' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2 -plugin /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc9X2lrU.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_3bc7c /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0 -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../.. CMakeFiles/cmTC_3bc7c.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtend.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_0b6aa' '-rdynamic' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2 -plugin /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccbpIvvb.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_0b6aa /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0 -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../.. CMakeFiles/cmTC_0b6aa.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtend.o /usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crtn.o]
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/cc9X2lrU.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccbpIvvb.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -230,7 +230,7 @@ Parsed CXX implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_3bc7c] ==> ignore
+    arg [cmTC_0b6aa] ==> ignore
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../../../lib/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/crtbegin.o] ==> ignore
@@ -239,7 +239,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/lib/../lib] ==> dir [/lib/../lib]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../..] ==> dir [/usr/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/../../..]
-    arg [CMakeFiles/cmTC_3bc7c.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_0b6aa.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -268,9 +268,9 @@ Parsed CXX implicit link information from above output:
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_965be"
-[1/2] Building CXX object CMakeFiles/cmTC_965be.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_965be
+Run Build Command:"/usr/bin/ninja" "cmTC_94728"
+[1/2] Building CXX object CMakeFiles/cmTC_94728.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_94728
 
 
     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
@@ -335,9 +335,9 @@ Run Build Command:"/usr/bin/ninja" "cmTC_965be"
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_b45b5"
-[1/2] Building CXX object CMakeFiles/cmTC_b45b5.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_b45b5
+Run Build Command:"/usr/bin/ninja" "cmTC_9cb28"
+[1/2] Building CXX object CMakeFiles/cmTC_9cb28.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_9cb28
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
@@ -402,9 +402,9 @@ Run Build Command:"/usr/bin/ninja" "cmTC_b45b5"
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
 Change Dir: /home/slim/source/graphene_modules/Registration/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/ninja" "cmTC_973d5"
-[1/2] Building CXX object CMakeFiles/cmTC_973d5.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_973d5
+Run Build Command:"/usr/bin/ninja" "cmTC_a2864"
+[1/2] Building CXX object CMakeFiles/cmTC_a2864.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_a2864
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers

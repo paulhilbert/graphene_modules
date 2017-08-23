@@ -10,7 +10,8 @@ vis_client::vis_client(std::string host, short port, uint32_t min_patch_count)
       last_patch_count_(0),
       patch_count_(0),
       idle_(true),
-      room_idx_(0) {}
+      room_idx_(0),
+      renderable_group_(new harmont::renderable_group(std::vector<harmont::renderable::ptr_t>())) {}
 
 vis_client::~vis_client() {
 }
@@ -81,6 +82,10 @@ void vis_client::request(const FW::request_t& req, FW::SmartStream* vis) {
     // request patches
 }
 
+const std::vector<Eigen::Vector3f>& vis_client::mesh() const {
+    return mesh_;
+}
+
 void vis_client::render_poll() {
     if (current_room_) {
         current_room_->render_poll();
@@ -97,12 +102,14 @@ bool vis_client::idle() const {
 }
 
 // asio thread
-void vis_client::on_global_data_ready(const merged_global_data_t& g_data, std::istream& arr_data) {
+void vis_client::on_global_data_ready(const merged_global_data_t& g_data, std::istream& arr_data, std::vector<Eigen::Vector3f>& mesh) {
     global_data_ = g_data;
 
     // load arrangement data
     arrangement_ = std::make_unique<RoomArr::RoomArrangement>();
     arrangement_->importArrangement(arr_data);
+
+    mesh_ = mesh;
 }
 
 // asio thread

@@ -158,7 +158,9 @@ boost::optional<uint32_t> RenderIFC::selectObject(const Eigen::Vector3f& origin,
         ray[    j] = origin[j];
         ray[4 + j] = dir[j];
     }
+    // ray[3] = min_lambda;
     ray[3] = 0.f;
+    // ray[7] = max_lambda;
     ray[7] = 1000.f;
 
     try {
