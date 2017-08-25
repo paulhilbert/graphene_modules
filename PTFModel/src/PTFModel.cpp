@@ -72,7 +72,7 @@ void PTFModel::init() {
     addObject("scene", scene_obj_);
     //score_->set_scene(scene);
     //scene_ = std::make_unique<tr::scene<point_t>>(scene);
-    search_ = std::make_unique<tr::stratified_search<point_t>>(scene, sample_params_, model_->diameter(), 3.f);
+    search_ = std::make_unique<tr::stratified_search<point_t>>(scene, sample_params_, model_->diameter(), 1.f);
 
     search_->set_model(model_);
 
@@ -80,30 +80,49 @@ void PTFModel::init() {
 
 
     /// OCTREE
-    std::vector<std::shared_ptr<harmont::renderable>> voxels;
-    auto& octree = search_->octree();
-    uint32_t max_depth = 0;//octree.getTreeDepth();
-    for(auto node_it = octree.breadth_begin(); node_it != octree.breadth_end(); ++node_it) {
-        uint32_t depth = node_it.getCurrentOctreeDepth();
-        if (depth > max_depth) break;
-        Eigen::Vector3f lower, upper;
-        octree.getVoxelBounds(node_it, lower, upper);
-        Eigen::Vector4f color = Eigen::Vector4f::Ones();
-        auto obj = std::make_shared<harmont::box_object>(lower, upper, color, true);
-        voxels.push_back(std::dynamic_pointer_cast<harmont::renderable>(obj));
-        //if (node_it.isLeafNode()) layers[depth].second += 1;
-        //else                      layers[depth].first += 1;
-    }
-    octree_ = std::make_shared<harmont::renderable_group>(voxels);
+    auto tree = search_->get_octree();
+    std::vector<Eigen::Vector4f> voxel_colors = {
+        Eigen::Vector4f(1.f, 0.f, 0.f, 1.f),
+        Eigen::Vector4f(0.f, 1.f, 0.f, 1.f),
+        Eigen::Vector4f(0.f, 0.f, 1.f, 1.f),
+        Eigen::Vector4f(1.f, 1.f, 0.f, 1.f),
+        Eigen::Vector4f(0.f, 1.f, 1.f, 1.f),
+        Eigen::Vector4f(1.f, 0.f, 1.f, 1.f),
+        Eigen::Vector4f(0.f, 0.f, 0.f, 1.f),
+        Eigen::Vector4f(1.f, 1.f, 1.f, 1.f)
+    };
+    uint32_t col_idx = 0;
+    octree_ = std::make_shared<harmont::renderable_group>(std::vector<harmont::renderable::ptr_t>());
+    ranges::for_each(tr::octree<point_t>::leaf_traverse(tree->root()), [&] (auto const& node) {
+        tr::leaf_node const& leaf = std::get<tr::leaf_node>(node);
+        auto box = std::make_shared<harmont::box_object>(leaf.bbox.min(), leaf.bbox.max(), voxel_colors[(col_idx++) % 8], true);
+        octree_->add_object(box);
+    });
     octree_->init();
     octree_->set_active(false);
     addObjectGroup("octree", octree_);
 
-    point_t min_pt, max_pt;
-    pcl::getMinMax3D(*scene, min_pt, max_pt);
-    auto bb = std::make_shared<harmont::box_object>(min_pt.getVector3fMap(), max_pt.getVector3fMap(), Eigen::Vector4f::Ones(), true);
-    bb->init();
-    addObject("bb", bb);
+    //
+    //
+    //std::vector<std::shared_ptr<harmont::renderable>> voxels;
+    //auto& octree = search_->octree();
+    //uint32_t max_depth = 0;//octree.getTreeDepth();
+    //for(auto node_it = octree.breadth_begin(); node_it != octree.breadth_end(); ++node_it) {
+        //uint32_t depth = node_it.getCurrentOctreeDepth();
+        //if (depth > max_depth) break;
+        //Eigen::Vector3f lower, upper;
+        //octree.getVoxelBounds(node_it, lower, upper);
+        //Eigen::Vector4f color = Eigen::Vector4f::Ones();
+        //auto obj = std::make_shared<harmont::box_object>(lower, upper, color, true);
+        //voxels.push_back(std::dynamic_pointer_cast<harmont::renderable>(obj));
+        ////if (node_it.isLeafNode()) layers[depth].second += 1;
+        ////else                      layers[depth].first += 1;
+    //}
+    //octree_ = std::make_shared<harmont::renderable_group>(voxels);
+    //octree_->init();
+    //octree_->set_active(false);
+    //addObjectGroup("octree", octree_);
+
 
 	addProperties();
 	registerEvents();
@@ -125,11 +144,12 @@ void PTFModel::addProperties() {
         model_obj_->set_transformation(t);
         */
         uint32_t n = scene_obj_->cloud()->size();
-        std::vector<Eigen::Vector4f> colors(n, Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
-        std::vector<Eigen::Vector4f> hues = Colors::Generation::shuffledColorsRGBA(subsets.size());
+        std::vector<Eigen::Vector4f> colors(n, Eigen::Vector4f(1.f, 0.f, 0.f, 1.f));
+        //std::vector<Eigen::Vector4f> hues = Colors::Generation::shuffledColorsRGBA(subsets.size());
         for (uint32_t sub = 0; sub < subsets.size(); ++sub) {
             for (const auto& idx : subsets[sub]) {
-                colors[idx] = hues[sub];
+                //colors[idx] = hues[sub];
+                colors[idx] = Eigen::Vector4f::Ones();
             }
         }
 
