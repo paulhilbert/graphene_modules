@@ -37,8 +37,7 @@ class PTFModel : public FW::Visualizer {
 		void registerEvents();
 
     protected:
-        void createOptixStructure();
-        boost::optional<uint32_t> selectObject(const Eigen::Vector3f& origin, const Eigen::Vector3f& dir);
+        void updateICP();
 
     protected:
         fs::path   model_path_;
@@ -51,7 +50,7 @@ class PTFModel : public FW::Visualizer {
         //vs::score_functor<point_t, point_t>::uptr_t score_;
         std::shared_ptr<tr::model<point_t>> model_;
         //std::unique_ptr<tr::scene<point_t>> scene_;
-        cloud_t::Ptr scene_cloud_;
+        cloud_t::Ptr model_cloud_;
         Eigen::Matrix4f transform_;
         tr::sample_parameters sample_params_;
         tr::discretization_params discr_params_;
@@ -61,6 +60,8 @@ class PTFModel : public FW::Visualizer {
         std::vector<uint32_t> subset_;
         float min_diameter_;
         std::shared_ptr<harmont::renderable_group> octree_;
+        bool toggle_state_ = false;
+        std::vector<Eigen::Vector3f> corr_lines_;
 };
 
 

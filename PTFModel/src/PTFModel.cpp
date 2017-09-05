@@ -37,14 +37,14 @@ void PTFModel::init() {
 
 
     // model
-    cloud_t::Ptr model(new cloud_t());
-    pcl::io::loadPCDFile(model_path_.string(), *model);
-    model_obj_ = std::make_shared<harmont::pointcloud_object<cloud_t, boost::shared_ptr>>(model, true);
+    model_cloud_ = cloud_t::Ptr(new cloud_t());
+    pcl::io::loadPCDFile(model_path_.string(), *model_cloud_);
+    model_obj_ = std::make_shared<harmont::pointcloud_object<cloud_t, boost::shared_ptr>>(model_cloud_, true);
     model_obj_->init();
 
-    //score_->set_model(model, 100);
+    //score_->set_model(model_cloud_, 100);
 
-    model_ = std::make_shared<tr::model<point_t>>(model, discr_params_);
+    model_ = std::make_shared<tr::model<point_t>>(model_cloud_, discr_params_);
     sample_params_.min_diameter_factor = min_diameter_;
     sample_params_.max_diameter_factor = 0.8f;
     sample_params_.min_orthogonality = 0.8f;
@@ -53,7 +53,7 @@ void PTFModel::init() {
     sync_model.wait();
     gui()->log()->info("model triplet count: " + std::to_string(model_->triplet_count()));
 
-    std::vector<Eigen::Vector4f> model_colors(model->size(), Eigen::Vector4f(0.f, 0.4f, 1.f, 1.f));
+    std::vector<Eigen::Vector4f> model_colors(model_cloud_->size(), Eigen::Vector4f(0.f, 0.4f, 1.f, 1.f));
     for (auto idx : model_->used_points()) {
         model_colors[idx] = Eigen::Vector4f(1.f, 1.f, 0.f, 1.f);
     }
@@ -102,27 +102,39 @@ void PTFModel::init() {
     octree_->set_active(false);
     addObjectGroup("octree", octree_);
 
-    //
-    //
-    //std::vector<std::shared_ptr<harmont::renderable>> voxels;
-    //auto& octree = search_->octree();
-    //uint32_t max_depth = 0;//octree.getTreeDepth();
-    //for(auto node_it = octree.breadth_begin(); node_it != octree.breadth_end(); ++node_it) {
-        //uint32_t depth = node_it.getCurrentOctreeDepth();
-        //if (depth > max_depth) break;
-        //Eigen::Vector3f lower, upper;
-        //octree.getVoxelBounds(node_it, lower, upper);
-        //Eigen::Vector4f color = Eigen::Vector4f::Ones();
-        //auto obj = std::make_shared<harmont::box_object>(lower, upper, color, true);
-        //voxels.push_back(std::dynamic_pointer_cast<harmont::renderable>(obj));
-        ////if (node_it.isLeafNode()) layers[depth].second += 1;
-        ////else                      layers[depth].first += 1;
-    //}
-    //octree_ = std::make_shared<harmont::renderable_group>(voxels);
-    //octree_->init();
-    //octree_->set_active(false);
-    //addObjectGroup("octree", octree_);
+    transform_ = Eigen::Matrix4f::Identity();
 
+    //const auto& vs_model = search_->get_score_functor().get_model();
+    //auto proj = vs_model.projection().inverse();
+    //auto ext = vs_model.extents();
+    //std::vector<Eigen::Vector3f> lines;
+    //std::vector<Eigen::Vector4f> colors;
+    //for (int i = 0; i < ext[0]; ++i) {
+        //for (int j = 0; j < ext[1]; ++j) {
+            //for (int k = 0; k < ext[2]; ++k) {
+                //Eigen::Vector4f vx(
+                    //static_cast<float>(i),
+                    //static_cast<float>(j),
+                    //static_cast<float>(k),
+                    //1.f
+                //);
+                //int idx = i*ext[1]*ext[2] + j*ext[2] + k;
+                //Eigen::Vector3f pos = (proj * vx).head(3);
+                //lines.push_back(pos);
+                //colors.push_back(Eigen::Vector4f(1.f, 0.f, 0.f, 1.f));
+                //Eigen::Vector3f nn(
+                    //vs_model.host_data()[idx][0],
+                    //vs_model.host_data()[idx][1],
+                    //vs_model.host_data()[idx][2]
+                //);
+                //lines.push_back(nn);
+                //colors.push_back(Eigen::Vector4f(0.f, 0.f, 1.f, 1.f));
+            //}
+        //}
+    //}
+    //auto lobj = std::make_shared<harmont::lines_object>(lines, colors);
+    //lobj->init();
+    //addObject("vxlines", lobj);
 
 	addProperties();
 	registerEvents();
@@ -130,28 +142,66 @@ void PTFModel::init() {
 
 void PTFModel::addProperties() {
     auto mcov = gui()->properties()->add<Number>("Match Coverage Threshold", "match_coverage");
-    mcov->setMin(0.0).setMax(1.0).setDigits(2).setValue(0.5f);
+    mcov->setMin(0.0).setMax(1.0).setDigits(2).setValue(0.8f);
+    auto cthres = gui()->properties()->add<Number>("Correspondence Distance Threshold", "corr_threshold");
+    cthres->setMin(0.0).setMax(1.0).setDigits(2).setValue(0.3f);
+    auto early_out = gui()->properties()->add<Number>("Early Out Correspondence Threshold", "early_out");
+    early_out->setMin(0.0).setMax(1.0).setDigits(2).setValue(0.99f);
     auto btn_upd = gui()->properties()->add<Button>("Update", "update");
     btn_upd->setCallback([&] () {
         //auto && [ts, subset] = search_->find_all(*model_, 0.9f, 0.5f);
         auto before = std::chrono::system_clock::now();
-        auto && [ts, subsets] = search_->find_all(*model_, gui()->properties()->get<Number>({"match_coverage"})->value(), 0.5f);
+        auto && [ts, subsets] = search_->find_all(*model_, gui()->properties()->get<Number>({"match_coverage"})->value(), gui()->properties()->get<Number>({"corr_threshold"})->value(), gui()->properties()->get<Number>({"early_out"})->value());
         //auto subset = search_->find(*model_, 0.9f, 0.5f).second;
         auto after = std::chrono::system_clock::now();
         std::cout << "Found " << ts.size() << " transformations in " << std::chrono::duration_cast<std::chrono::seconds>(after - before).count() << "s " << "\n";
 
+        //auto instGroup = std::make_shared<harmont::renderable_group>(std::vector<harmont::renderable::ptr_t>());
+        //std::vector<Eigen::Vector4f> hues = Colors::Generation::shuffledColorsRGBA(ts.size());
+        //for (uint32_t i = 0; i < ts.size(); ++i) {
+            //auto instance = std::make_shared<harmont::pointcloud_object<cloud_t, boost::shared_ptr>>(model_cloud_, true);
+            //instance->init();
+            //instance->set_transformation(ts[i]);
+            //instance->set_point_colors(hues[i]);
+            //instGroup->add_object(instance);
+        //}
+        //removeObjectGroup("instances");
+        //addObjectGroup("instances", instGroup);
+
         /*
         model_obj_->set_transformation(t);
         */
+        //std::vector<uint32_t> all(scene_obj_->cloud()->size());
+        //std::iota(all.begin(), all.end(), 0);
+        //std::set<uint32_t> matches;
+        //for (uint32_t sub = 0; sub < subsets.size(); ++sub) {
+            //for (const auto& idx : subsets[sub]) {
+                //matches.insert(idx);
+            //}
+        //}
+        //std::vector<uint32_t> residual;
+        //std::set_difference(all.begin(), all.end(), matches.begin(), matches.end(), std::back_inserter(residual));
+
+        //cloud_t::Ptr scene(new cloud_t());
+        //for (const auto& idx : residual) {
+            //scene->push_back(scene_obj_->cloud()->points[idx]);
+        //}
+        //tryRemoveObject("scene");
+        //scene_obj_ = std::make_shared<harmont::pointcloud_object<cloud_t, boost::shared_ptr>>(scene);
+        //scene_obj_->init();
+        //scene_obj_->set_point_colors(Eigen::Vector4f(0.f, 0.f, 0.f, 1.f));
+        //addObject("scene", scene_obj_);
+
         uint32_t n = scene_obj_->cloud()->size();
-        std::vector<Eigen::Vector4f> colors(n, Eigen::Vector4f(1.f, 0.f, 0.f, 1.f));
-        //std::vector<Eigen::Vector4f> hues = Colors::Generation::shuffledColorsRGBA(subsets.size());
+        std::vector<Eigen::Vector4f> colors(n, Eigen::Vector4f(0.f, 0.f, 0.f, 1.f));
+        std::vector<Eigen::Vector4f> hues = Colors::Generation::shuffledColorsRGBA(subsets.size());
         for (uint32_t sub = 0; sub < subsets.size(); ++sub) {
-            for (const auto& idx : subsets[sub]) {
-                //colors[idx] = hues[sub];
-                colors[idx] = Eigen::Vector4f::Ones();
-            }
+          for (const auto& idx : subsets[sub]) {
+              colors[idx] = hues[sub];
+              //colors[idx] = Eigen::Vector4f(0.f, 0.f, 0.f, 0.01f);
+          }
         }
+        //addObject("scene", scene_obj_);
 
         //std::vector<uint32_t> residual;
         //std::set_difference(subset_.begin(), subset_.end(), subset.begin(), subset.end(), std::back_inserter(residual));
@@ -185,12 +235,34 @@ void PTFModel::addProperties() {
     toggle_octree->setValue(false);
     toggle_octree->setCallback([&] (bool state) { octree_->set_active(state); });
 
+    auto icp_btn = gui()->properties()->add<Button>("ICP", "icp_btn");
+    icp_btn->setCallback([&] () { updateICP(); });
+
     //auto voxel_visible = gui()->properties()->add<Boolean>("Show Voxel Grid", "voxel_visible");
     //voxel_visible->setValue(false);
     //voxel_visible->setCallback([&] (bool state) { voxel_obj_->set_active(state); });
 }
 
 void PTFModel::registerEvents() {
+	fw()->events()->connect<void (int, int)>("LEFT_DRAG", [&] (int dx, int dy) {
+        if (fw()->modifier()->shift()) {
+            float factor = 0.01f;
+            float angle = -factor * dx;
+            Eigen::Vector3f axis = fw()->camera()->forward();
+            Eigen::AngleAxisf aa(angle, axis);
+            Eigen::Matrix4f move = Eigen::Matrix4f::Identity();
+            move.block<3,3>(0,0) = aa.toRotationMatrix();
+            transform_ = move * transform_;
+            scene_obj_->set_transformation(transform_);
+        } else {
+            float factor = 0.005f;
+            Eigen::Matrix4f move = Eigen::Matrix4f::Identity();
+            move.block<3,1>(0,3) = factor * dx * fw()->camera()->right() - factor * dy * fw()->camera()->up();
+            transform_ = move * transform_;
+            scene_obj_->set_transformation(transform_);
+        }
+    });
+    /*
 	fw()->events()->connect<void (int, int)>("LEFT_DRAG_START", [&] (int x, int y) {
         start_x = x;
         start_y = y;
@@ -215,6 +287,65 @@ void PTFModel::registerEvents() {
         }
         scene_obj_->set_point_colors(colors);
     });
+    */
+}
+
+void PTFModel::updateICP() {
+    if (toggle_state_) {
+        Eigen::Matrix4f move = transform_ * scene_obj_->transformation().inverse();
+        scene_obj_->set_transformation(transform_);
+        //Eigen::Vector3f cen_s = corr_lines_[corr_lines_.size() - 2];
+        //Eigen::Vector3f cen_m = corr_lines_[corr_lines_.size() - 1];
+        //corr_lines_.resize(corr_lines_.size() - 2);
+        std::vector<Eigen::Vector4f> colors;
+        for (uint32_t i = 0; i < corr_lines_.size(); ++i) {
+            if (i%2 == 0) { // scene
+                colors.push_back(Eigen::Vector4f(0.f, 0.f, 1.f, 1.f));
+                corr_lines_[i] = (move * corr_lines_[i].homogeneous()).head(3);
+            } else { // model
+                colors.push_back(Eigen::Vector4f(1.f, 1.f, 0.f, 1.f));
+            }
+        }
+
+        //corr_lines_.push_back((move * cen_s.homogeneous()).head(3));
+        //corr_lines_.push_back(cen_m);
+        //colors.push_back(Eigen::Vector4f(0.f, 1.f, 0.f, 1.f));
+        //colors.push_back(Eigen::Vector4f(1.f, 0.f, 0.f, 1.f));
+        tryRemoveObject("corrs");
+        auto lobj = std::make_shared<harmont::lines_object>(corr_lines_, colors);
+        lobj->init();
+        addObject("corrs", lobj);
+    } else {
+        auto& score = search_->get_score_functor();
+        //std::vector<Eigen::Vector3f> cm;
+        //std::vector<int> is;
+        transform_ = score.icp(transform_, 0.3f, 1).first;
+        //is = corr;
+
+        //tryRemoveObject("corrs");
+        //corr_lines_.clear();
+        //std::vector<Eigen::Vector4f> colors;
+        //for (uint32_t i = 0; i < is.size(); ++i) {
+            //Eigen::Vector3f pm = cm[i];
+            //Eigen::Vector3f ps = (transform_ * scene_obj_->cloud()->points[is[i]].getVector3fMap().homogeneous()).head(3);
+            ////std::cout << pm.transpose() << "  -->  " << ps.transpose() << "\n";
+            //corr_lines_.push_back(ps);
+            //corr_lines_.push_back(pm);
+            //colors.push_back(Eigen::Vector4f(0.f, 0.f, 1.f, 1.f));
+            //colors.push_back(Eigen::Vector4f(1.f, 1.f, 0.f, 1.f));
+        //}
+        //corr_lines_.push_back(cen_s);
+        //corr_lines_.push_back(cen_m);
+        //colors.push_back(Eigen::Vector4f(0.f, 1.f, 0.f, 1.f));
+        //colors.push_back(Eigen::Vector4f(1.f, 0.f, 0.f, 1.f));
+
+        //auto lobj = std::make_shared<harmont::lines_object>(corr_lines_, colors);
+        //lobj->init();
+        //addObject("corrs", lobj);
+
+        //transform_ = reg;
+    }
+    toggle_state_ = !toggle_state_;
 }
 
 PTFModel::Factory::Factory() : FW::Factory() {
